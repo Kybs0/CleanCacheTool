@@ -41,24 +41,8 @@
                                          VerticalAlignment="Center"/>
         </Grid>
         <GroupBox x:Name="OutputGroupBox" Grid.Row="1">
-            <!--<ItemsControl ItemsSource="{Binding ErrorList}"
-                          ScrollViewer.VerticalScrollBarVisibility="Auto"
-                          ScrollViewer.CanContentScroll="True" 
-                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel">
-                <ItemsControl.Template>
-                    <ControlTemplate TargetType="ItemsControl">
-                        <Border Background="{TemplateBinding Panel.Background}"
-                                x:Name="Bd" SnapsToDevicePixels="True">
-                            <ScrollViewer FocusVisualStyle="{x:Null}">
-                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
-                            </ScrollViewer>
-                        </Border>
-                    </ControlTemplate>
-                </ItemsControl.Template>
-            </ItemsControl>-->
-
             <GroupBox.Header>
-                <TextBlock Text="{Binding ErrorList.Count,StringFormat=错误列表({0})}"></TextBlock>
+                <TextBlock Text="{Binding ErrorListCount,StringFormat=错误列表({0})}"></TextBlock>
             </GroupBox.Header>
             <TextBox x:Name="ErrorTextBox" Text="{Binding ErrorText}" TextWrapping="Wrap" IsEnabled="True"
                      ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"

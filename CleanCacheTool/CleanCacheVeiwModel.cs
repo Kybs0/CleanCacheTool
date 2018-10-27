@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Security.Permissions;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -53,6 +54,7 @@ namespace CleanCacheTool
 
             IsCleaningCache = true;
             worker.ReportProgress(0);
+            ErrorText = string.Empty;
             _currentOperationDetail = "获取待删除文件..";
 
             var toCleaningFiles = GetCacheFiles();
@@ -99,10 +101,8 @@ namespace CleanCacheTool
 
                 if (!string.IsNullOrEmpty(CurrentOperationDetail) && CurrentOperationDetail.Contains("Error:"))
                 {
-                    //ErrorList.Add(_currentOperationDetail.Replace("Error:", string.Empty));
                     var currentText = _currentOperationDetail.Replace("Error:", string.Empty);
                     _errorText += currentText + "\r\n";
-                    _errorList.Add(currentText);
                 }
             });
         }
@@ -118,8 +118,10 @@ namespace CleanCacheTool
             else
             {
                 CleanCacheProgress = 100;
+
                 OnPropertyChanged(nameof(ErrorText));
-                OnPropertyChanged(nameof(ErrorList));
+                OnPropertyChanged(nameof(ErrorListCount));
+
                 Task.Run(async () =>
                 {
                     await Task.Delay(TimeSpan.FromSeconds(3));
@@ -143,16 +145,7 @@ namespace CleanCacheTool
             }
         }
 
-        private List<string> _errorList = new List<string>() { };
-        public List<string> ErrorList
-        {
-            get => _errorList;
-            set
-            {
-                _errorList = value;
-                OnPropertyChanged();
-            }
-        }
+        public int ErrorListCount => Regex.Matches(ErrorText, "\r\n").Count;
 
         private string _errorText = string.Empty;
 
@@ -163,6 +156,7 @@ namespace CleanCacheTool
             {
                 _errorText = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ErrorListCount));
             }
         }
 
