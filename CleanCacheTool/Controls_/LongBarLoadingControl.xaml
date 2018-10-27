@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="CleanCacheTool.LongBarLoadingControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:CleanCacheTool="clr-namespace:CleanCacheTool"
+             mc:Ignorable="d" x:Name="TheLoadingControl"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <DrawingImage x:Key="Image.Edit.Success">
+                <DrawingImage.Drawing>
+                    <GeometryDrawing Brush="#FF65AD57">
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry FillRule="Nonzero" Figures="M34.9473686218262,14.7368421554565C34.229320526123,14.7368421554565,33.581241607666,15.0364093780518,33.1212882995605,15.5173835754395L33.112361907959,15.5084562301636 21.4622383117676,27.1585807800293 16.6387233734131,22.3350677490234 16.6377830505371,22.3360080718994C16.1747303009033,21.807445526123 15.4947624206543,21.4736843109131 14.7368421554565,21.4736843109131 13.3415966033936,21.4736843109131 12.2105264663696,22.6047534942627 12.2105264663696,24 12.2105264663696,24.7579212188721 12.5442876815796,25.4378871917725 13.0728511810303,25.9009418487549L13.0659742355347,25.9078178405762 19.6758632659912,32.517707824707 19.6788501739502,32.5147171020508C20.1366767883301,32.9768829345703 20.77174949646,33.2631568908691 21.4736843109131,33.2631568908691 22.2601127624512,33.2631568908691 22.9626140594482,32.9038162231445 23.4259490966797,32.3403701782227L36.550895690918,19.2154235839844C37.1143417358398,18.7520866394043 37.4736824035645,18.0495872497559 37.4736824035645,17.2631587982178 37.4736824035645,15.8679122924805 36.3426132202148,14.7368421554565 34.9473686218262,14.7368421554565z M24,0C37.2548332214355,0 48,10.7451658248901 48,24 48,37.2548332214355 37.2548332214355,48 24,48 10.7451658248901,48 0,37.2548332214355 0,24 0,10.7451658248901 10.7451658248901,0 24,0z" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingImage.Drawing>
+            </DrawingImage>
+
+            <!--长形进度条-->
+            <Style x:Key="Style.ProgressBar.LongBar" TargetType="{x:Type ProgressBar}">
+                <Setter Property="Foreground" Value="#63AE52"></Setter>
+                <Setter Property="Background" Value="#EEEEEE"></Setter>
+                <Setter Property="Height" Value="9"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ProgressBar}">
+                            <Grid MinHeight="4" MinWidth="200" Width="{TemplateBinding Width}"
+                              Height="{TemplateBinding Height}">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Determinate" />
+                                        <VisualState x:Name="Indeterminate">
+                                            <Storyboard>
+                                                <ObjectAnimationUsingKeyFrames Duration="00:00:00"
+                                                 Storyboard.TargetName="PART_Indicator"
+                                                 Storyboard.TargetProperty="Background">
+                                                    <DiscreteObjectKeyFrame KeyTime="00:00:00">
+                                                        <DiscreteObjectKeyFrame.Value>
+                                                            <SolidColorBrush>Transparent</SolidColorBrush>
+                                                        </DiscreteObjectKeyFrame.Value>
+                                                    </DiscreteObjectKeyFrame>
+                                                </ObjectAnimationUsingKeyFrames>
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Border x:Name="PART_Track"  BorderThickness="0" Background="{TemplateBinding Background}"
+                                    CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent},Path=(CleanCacheTool:ControlsHelper.CornerRadius)}">
+                                </Border>
+                                <Border x:Name="PART_Indicator" BorderThickness="0" 
+                                    CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent},Path=(CleanCacheTool:ControlsHelper.CornerRadius)}"
+                                    HorizontalAlignment="Left" Background="{TemplateBinding Foreground}"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <ControlTemplate x:Key="Template.LoadingContent" TargetType="ContentControl">
+                <Grid x:Name="RootGrid">
+                    <StackPanel x:Name="LoadingPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock x:Name="LoadingTipsTextBlock" Text="{Binding ElementName=TheLoadingControl,Path=LoadingTips}"
+                                   FontSize="16" TextAlignment="Center" Foreground="#464646"/>
+                        <TextBlock x:Name="LoadingTipsDetailTextBlock" Text="{Binding ElementName=TheLoadingControl,Path=LoadingTipsDetail}"
+                                   Margin="0 13 0 0" FontSize="14" TextAlignment="Center" Foreground="#464646"/>
+                        <ProgressBar x:Name="LoadingProgressBar" Style="{StaticResource Style.ProgressBar.LongBar}" Width="270"
+                                     Margin="0 22 0 0" Value="{Binding ElementName=TheLoadingControl,Path=ProgressValue}" 
+                                     CleanCacheTool:ControlsHelper.CornerRadius="4"/>
+                        <TextBlock x:Name="ProgressTextBlock"
+                                   FontSize="12" TextAlignment="Center" Foreground="#666666">
+                            <TextBlock.Text>
+                                <Binding ElementName="TheLoadingControl" Path="ProgressValueDetail"></Binding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <StackPanel x:Name="LoadedStatePanel" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Image Source="{StaticResource Image.Edit.Success}" Stretch="None"/>
+                        <TextBlock x:Name="LoadedStateTextBlock" Margin="0 24 0 0"
+                                   Text="{Binding ElementName=TheLoadingControl,Path=LoadedTips}"
+                                   FontSize="15" TextAlignment="Center" Foreground="#666666"/>
+                    </StackPanel>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <DataTrigger Binding="{Binding ElementName=TheLoadingControl,Path=IsLoadingTipsDetailSmall}" Value="true">
+                        <Setter TargetName="LoadingTipsDetailTextBlock" Property="Foreground" Value="#888888"/>
+                        <Setter TargetName="LoadingTipsDetailTextBlock" Property="FontSize" Value="10"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=TheLoadingControl,Path=LoadingSuccessed}" Value="true">
+                        <Setter TargetName="LoadingPanel" Property="Visibility" Value="Collapsed"/>
+                        <Setter TargetName="LoadedStatePanel" Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <ContentControl Template="{StaticResource Template.LoadingContent}"></ContentControl>
+    </Grid>
+</UserControl>

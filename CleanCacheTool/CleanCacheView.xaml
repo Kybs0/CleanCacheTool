@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="CleanCacheTool.CleanCacheView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CleanCacheTool"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" DataContext="{x:Static local:CleanCacheVeiwModel.ViewModel}">
+    <UserControl.Resources>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityReverseConverter" IsReverse="True"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" MinHeight="120">
+            <StackPanel x:Name="CacheOperationPanel" VerticalAlignment="Center" HorizontalAlignment="Center"
+                        Visibility="{Binding IsCleaningCache,Converter={StaticResource BoolToVisibilityReverseConverter}}">
+                <StackPanel Orientation="Horizontal" Margin="0 30" HorizontalAlignment="Center">
+                    <TextBlock x:Name="CacheSizeTextBlock" HorizontalAlignment="Center">
+                        待清理：
+                        <Hyperlink Click="Hyperlink_OnClick" ToolTip="打开配置文件">
+                            <TextBlock Text="{Binding CacheSize}"></TextBlock>
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="RefreshButton" Content="刷新" Width="80" Command="{Binding RefreshCommand}" Background="Transparent" BorderBrush="LightGray"/>
+                    <Button x:Name="CleanButton" Content="清理" Margin="30 0 0 0" Width="80" Command="{Binding CleanCacheCommand}" Background="Transparent" BorderBrush="LightGray"/>
+                </StackPanel>
+            </StackPanel>
+            <local:LongBarLoadingControl x:Name="LoadingControl" 
+                                         Visibility="{Binding IsCleaningCache,Converter={StaticResource BoolToVisibilityConverter}}"
+                                         LoadingTips="缓存清理中"
+                                         LoadingTipsDetail="{Binding CurrentOperationDetail}" IsLoadingTipsDetailSmall="True"
+                                         ProgressValue="{Binding CleanCacheProgress}"
+                                         ProgressValueDetail="{Binding CleanCacheProgressDetail}"
+                                         LoadedTips="清理完成"
+                                         VerticalAlignment="Center"/>
+        </Grid>
+        <GroupBox x:Name="OutputGroupBox" Grid.Row="1">
+            <!--<ItemsControl ItemsSource="{Binding ErrorList}"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ScrollViewer.CanContentScroll="True" 
+                          VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel">
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <Border Background="{TemplateBinding Panel.Background}"
+                                x:Name="Bd" SnapsToDevicePixels="True">
+                            <ScrollViewer FocusVisualStyle="{x:Null}">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+            </ItemsControl>-->
+
+            <GroupBox.Header>
+                <TextBlock Text="{Binding ErrorList.Count,StringFormat=错误列表({0})}"></TextBlock>
+            </GroupBox.Header>
+            <TextBox x:Name="ErrorTextBox" Text="{Binding ErrorText}" TextWrapping="Wrap" IsEnabled="True"
+                     ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Item"
+                     TextChanged="ErrorTextBox_OnTextChanged"></TextBox>
+        </GroupBox>
+    </Grid>
+</UserControl>
