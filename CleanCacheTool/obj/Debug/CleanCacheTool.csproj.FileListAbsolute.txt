@@ -41,7 +41,6 @@ C:\Users\10167\source\repos\CleanCacheTool\CleanCacheTool\obj\Debug\CleanCacheTo
 F:\GitHub\CleanCacheTool\CleanCacheTool\bin\Debug\CleanCacheTool.exe.config
 F:\GitHub\CleanCacheTool\CleanCacheTool\bin\Debug\CleanCacheTool.exe
 F:\GitHub\CleanCacheTool\CleanCacheTool\bin\Debug\CleanCacheTool.pdb
-F:\GitHub\CleanCacheTool\CleanCacheTool\obj\Debug\CleanCacheTool.csprojAssemblyReference.cache
 F:\GitHub\CleanCacheTool\CleanCacheTool\obj\Debug\CleanCacheView.g.cs
 F:\GitHub\CleanCacheTool\CleanCacheTool\obj\Debug\Controls_\LongBarLoadingControl.g.cs
 F:\GitHub\CleanCacheTool\CleanCacheTool\obj\Debug\MainWindow.g.cs

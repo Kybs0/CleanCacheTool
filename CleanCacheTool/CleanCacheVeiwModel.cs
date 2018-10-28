@@ -53,42 +53,90 @@ namespace CleanCacheTool
             var worker = (BackgroundWorker)sender;
 
             IsCleaningCache = true;
-            worker.ReportProgress(0);
             ErrorText = string.Empty;
-            _currentOperationDetail = "获取待删除文件..";
+            worker.ReportProgress(0);
 
-            var toCleaningFiles = GetCacheFiles();
-            var totalSize = toCleaningFiles.Select(i => new FileInfo(i)).Sum(i => i.Length);
-            long handledSize = 0;
-
-            int deleteFilesCount = toCleaningFiles.Count;
-            int deleteIndex = 0;
-            foreach (var cacheFilePath in toCleaningFiles)
-            {
-                deleteIndex++;
-                //删除文件
-                try
-                {
-                    handledSize += new FileInfo(cacheFilePath).Length;
-
-                    FileUtil.Delete(cacheFilePath);
-                    _currentOperationDetail = cacheFilePath;
-                }
-                catch (Exception exception)
-                {
-                    _currentOperationDetail = $"Error:{exception.Message}";
-                }
-                finally
-                {
-                    _cleanCacheProgressDetail = $"{deleteIndex}/{deleteFilesCount}";
-                    //报告进度
-                    var progress = totalSize == 0 ? 100 : handledSize * 100 / totalSize;
-                    worker.ReportProgress(Convert.ToInt32(progress));
-                }
-            }
+            //使用CMD清理Winsxc
+            CacheCacheByCmd(worker);
+            //删除文件
+            CleanCacheUsingFileUtil(worker);
 
             //删除文件夹下所有的空文件夹
             ToCleanUpManager.Folders.ForEach(folder => FolderUtil.DeleteEmptyFolder(folder, false));
+        }
+
+        private void CacheCacheByCmd(BackgroundWorker worker)
+        {
+            _currentOperationError = string.Empty;
+            worker.ReportProgress(0);
+            var commands = ToCleanUpManager.GetCleanCacheCommands();
+
+            int index = 0;
+            foreach (var command in commands)
+            {
+                index++;
+
+                try
+                {
+                    _currentOperationDetail = $"执行{command}";
+                    ExecuteCmdHelper.ExecuteCmd(command);
+                }
+                catch (Exception e)
+                {
+                    _currentOperationError = $"{command}执行失败";
+                }
+                finally
+                {
+                    worker.ReportProgress(Convert.ToInt32(Convert.ToDouble(index) / Convert.ToDouble(commands.Count)));
+                }
+            }
+        }
+
+        private void CleanCacheUsingFileUtil(BackgroundWorker worker)
+        {
+            _currentOperationError = string.Empty;
+            //1.获取待删除文件
+            _currentOperationDetail = "获取待删除文件..";
+            worker.ReportProgress(0);
+
+            var toCleaningDictionary = GetCacheFiles();
+            List<string> toCleaningFiles = new List<string>();
+            foreach (var keyValuePair in GetCacheFiles())
+            {
+                toCleaningFiles.AddRange(keyValuePair.Value);
+            }
+            var totalSize = toCleaningFiles.Select(i => new FileInfo(i)).Sum(i => i.Length);
+            long handledSize = 0;
+
+            //2.使用管理员权限删除文件
+            int deleteFilesCount = toCleaningFiles.Count;
+            int deleteIndex = 0;
+            foreach (var toCleaningKeypair in toCleaningDictionary)
+            {
+                _currentOperationDetail = $"删除{toCleaningKeypair.Key}";
+                foreach (var cacheFilePath in toCleaningKeypair.Value)
+                {
+                    deleteIndex++;
+
+                    try
+                    {
+                        handledSize += new FileInfo(cacheFilePath).Length;
+
+                        FileUtil.Delete(cacheFilePath);
+                    }
+                    catch (Exception exception)
+                    {
+                        _currentOperationError = exception.Message;
+                    }
+                    finally
+                    {
+                        _cleanCacheProgressDetail = $"{deleteIndex}/{deleteFilesCount}";
+                        //报告进度
+                        var progress = totalSize == 0 ? 100 : handledSize * 100 / totalSize;
+                        worker.ReportProgress(Convert.ToInt32(progress));
+                    }
+                }
+            }
         }
 
         private void CleanCleanBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -99,10 +147,9 @@ namespace CleanCacheTool
                 OnPropertyChanged(nameof(CleanCacheProgressDetail));
                 OnPropertyChanged(nameof(CurrentOperationDetail));
 
-                if (!string.IsNullOrEmpty(CurrentOperationDetail) && CurrentOperationDetail.Contains("Error:"))
+                if (!string.IsNullOrEmpty(_currentOperationError))
                 {
-                    var currentText = _currentOperationDetail.Replace("Error:", string.Empty);
-                    _errorText += currentText + "\r\n";
+                    _errorText += _currentOperationError + "\r\n";
                 }
             });
         }
@@ -113,12 +160,13 @@ namespace CleanCacheTool
             {
                 CleanCacheProgress = 0;
                 IsCleaningCache = false;
+                _currentOperationError = string.Empty;
                 MessageBox.Show($"清理课件缓存时遇到异常！\r\n{e.Error}");
             }
             else
             {
                 CleanCacheProgress = 100;
-
+                _currentOperationError = string.Empty;
                 OnPropertyChanged(nameof(ErrorText));
                 OnPropertyChanged(nameof(ErrorListCount));
 
@@ -132,6 +180,11 @@ namespace CleanCacheTool
             }
             _currentWorker.Dispose();
         }
+
+        /// <summary>
+        /// 操作异常
+        /// </summary>
+        private string _currentOperationError = string.Empty;
 
         private string _currentOperationDetail = string.Empty;
 
@@ -205,7 +258,11 @@ namespace CleanCacheTool
             //课件缓存显示
             Task.Run(() =>
             {
-                List<string> files = GetCacheFiles();
+                List<string> files = new List<string>();
+                foreach (var keyValuePair in GetCacheFiles())
+                {
+                    files.AddRange(keyValuePair.Value);
+                }
                 var cacheSpaceSize = files.Select(i => new FileInfo(i)).Sum(fileInfo => fileInfo.Length);
 
                 CacheSize = UnitConverter.ConvertSize(cacheSpaceSize);
@@ -231,19 +288,23 @@ namespace CleanCacheTool
 
         #region 缓存列表
 
-        private List<string> cacheFiles;
+        private Dictionary<string, List<string>> cacheFiles;
 
-        private List<string> GetCacheFiles()
+        /// <summary>
+        /// 获取缓存列表
+        /// </summary>
+        /// <returns>文件夹，文件列表</returns>
+        private Dictionary<string, List<string>> GetCacheFiles()
         {
             //if (cacheFiles == null)
             //{
-            cacheFiles = new List<string>();
+            cacheFiles = new Dictionary<string, List<string>>();
 
             var folders = ToCleanUpManager.Folders;
             foreach (var folder in folders)
             {
                 var allFiles = FolderUtil.GetAllFiles(folder);
-                cacheFiles.AddRange(allFiles);
+                cacheFiles.Add(folder, allFiles);
             }
             //}
 

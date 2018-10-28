@@ -27,7 +27,7 @@ namespace CleanCacheTool
                 var fileStream = File.Create(iniFilePath);
                 fileStream.Close();
 
-                var presetFolders = GetPresetFolders().Where(path=>Directory.Exists(path)).ToList();
+                var presetFolders = GetPresetFolders().Where(path => Directory.Exists(path)).ToList();
                 IniUtility.SaveKeyValuesBySection(
                     presetFolders.Select(i => Tuple.Create(Path.GetFileNameWithoutExtension(i), i)), IniSection,
                     iniFilePath);
@@ -51,6 +51,8 @@ namespace CleanCacheTool
             @"C:\Windows\winsxs\Backup",
             @"C:\Windows\Installer\$PatchCache$\Managed",
             @"C:\Windows\SoftwareDistribution\Download",
+            @"C:\Windows\Prefetch",
+            @"C:\Users\10167\AppData\Local\Temp",
             @"C:\Windows\assembly\temp",
         };
 
@@ -66,6 +68,8 @@ namespace CleanCacheTool
             string en5Dependencies = Path.Combine(en5DataPath, "Dependencies");
             folders.Add(en5Dependencies);
 
+            string pptServiceTemp = Path.Combine(seewoDataPath, "PPTService", "Temp");
+            folders.Add(pptServiceTemp);
             string seewoServiceTemp = Path.Combine(seewoDataPath, "SeewoService", "Temp");
             folders.Add(seewoServiceTemp);
             string seewoAdminTemp = Path.Combine(seewoDataPath, "SeewoAdminService", "Temp");
@@ -73,6 +77,19 @@ namespace CleanCacheTool
             string seewoLinkTemp = Path.Combine(seewoDataPath, "SeewoLink", "Temp");
             folders.Add(seewoLinkTemp);
             return folders;
+        }
+
+        public static List<string> GetCleanCacheCommands()
+        {
+            List<string> commands = new List<string>
+            {
+                //删除windows更新缓存
+                "Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase",
+                //删除DNS缓存
+                "ipconfig/flushDNS"
+            };
+
+            return commands;
         }
     }
 }
