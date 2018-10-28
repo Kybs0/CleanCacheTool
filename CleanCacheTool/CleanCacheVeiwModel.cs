@@ -53,6 +53,7 @@ namespace CleanCacheTool
             var worker = (BackgroundWorker)sender;
 
             IsCleaningCache = true;
+            OutputText = string.Empty;
             ErrorText = string.Empty;
             worker.ReportProgress(0);
 
