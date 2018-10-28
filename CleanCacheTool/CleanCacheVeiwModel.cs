@@ -79,7 +79,7 @@ namespace CleanCacheTool
                 var currentOperationOutput = string.Empty;
                 try
                 {
-                    var currentOperationDetail = $"执行{command}";
+                    var currentOperationDetail = $"执行{command}，可能需要几分钟，请等待";
                     worker.ReportProgress(-1,
                         new ProgressChangedContent()
                         {
