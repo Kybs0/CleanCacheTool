@@ -108,8 +108,8 @@ namespace CleanCacheTool
         {
             List<string> commands = new List<string>
             {
-                //删除windows更新缓存
-                "Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase",
+                //删除windows更新缓存--更新时间太长，放弃
+                //"Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase",
                 //删除DNS缓存
                 "ipconfig/flushDNS"
             };
