@@ -76,10 +76,9 @@ namespace CleanCacheTool
                 index++;
                 var currentOperationError = string.Empty;
                 var currentOperationOutput = string.Empty;
-                var currentOperationDetail = string.Empty;
                 try
                 {
-                    currentOperationDetail = $"执行{command}";
+                    var currentOperationDetail = $"执行{command}";
                     worker.ReportProgress(-1,
                         new ProgressChangedContent()
                         {
@@ -87,7 +86,7 @@ namespace CleanCacheTool
                         });
 
                     var executeCmdResult = ExecuteCmdHelper.ExecuteCmd(command);
-                    currentOperationOutput = executeCmdResult;
+                    currentOperationOutput = executeCmdResult.Replace(ExecuteCmdHelper.ExistStr, string.Empty);
                 }
                 catch (Exception e)
                 {

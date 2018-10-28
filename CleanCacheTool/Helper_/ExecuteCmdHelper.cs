@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,7 +27,7 @@ namespace CleanCacheTool
             process.StartInfo.RedirectStandardError = true;//重定向标准错误输出
             process.Start();//启动程序
 
-            process.StandardInput.WriteLine(cmdCommands + "&exit");
+            process.StandardInput.WriteLine(cmdCommands + ExistStr);
             process.StandardInput.AutoFlush = true;
             
             string strOuput = process.StandardOutput.ReadToEnd();
@@ -35,5 +36,7 @@ namespace CleanCacheTool
 
             return strOuput;
         }
+
+        public static string ExistStr = "&exit";
     }
 }
