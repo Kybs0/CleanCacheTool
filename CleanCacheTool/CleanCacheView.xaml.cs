@@ -28,7 +28,7 @@ namespace CleanCacheTool
             InitializeComponent();
         }
 
-        private void ErrorTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             ErrorTextBox.ScrollToEnd();
         }

@@ -14,6 +14,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" MinHeight="120">
             <StackPanel x:Name="CacheOperationPanel" VerticalAlignment="Center" HorizontalAlignment="Center"
@@ -40,14 +41,20 @@
                                          LoadedTips="清理完成"
                                          VerticalAlignment="Center"/>
         </Grid>
-        <GroupBox x:Name="OutputGroupBox" Grid.Row="1">
+        <GroupBox x:Name="OutputGroupBox" Grid.Row="1" Header="输出日志">
+            <TextBox x:Name="OutputTextBox" Text="{Binding OutputText}" TextWrapping="Wrap" IsEnabled="True"
+                     ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Item"
+                     TextChanged="TextBox_OnTextChanged"></TextBox>
+        </GroupBox>
+        <GroupBox x:Name="ErrorGroupBox" Grid.Row="2">
             <GroupBox.Header>
                 <TextBlock Text="{Binding ErrorListCount,StringFormat=错误列表({0})}"></TextBlock>
             </GroupBox.Header>
             <TextBox x:Name="ErrorTextBox" Text="{Binding ErrorText}" TextWrapping="Wrap" IsEnabled="True"
                      ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
                      VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Item"
-                     TextChanged="ErrorTextBox_OnTextChanged"></TextBox>
+                     TextChanged="TextBox_OnTextChanged"></TextBox>
         </GroupBox>
     </Grid>
 </UserControl>

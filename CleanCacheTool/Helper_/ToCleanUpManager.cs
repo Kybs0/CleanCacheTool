@@ -10,7 +10,7 @@ namespace CleanCacheTool
 {
     public class ToCleanUpManager
     {
-        private const string IniSection = "可清理路径列表";
+        private const string IniSection = "清理路径列表（可配置）";
         public static List<string> GetFolders()
         {
             var iniFilePath = GetIniFilePath();
@@ -27,12 +27,24 @@ namespace CleanCacheTool
                 var fileStream = File.Create(iniFilePath);
                 fileStream.Close();
 
-                var presetFolders = GetPresetFolders().Where(path => Directory.Exists(path)).ToList();
-                IniUtility.SaveKeyValuesBySection(
-                    presetFolders.Select(i => Tuple.Create(Path.GetFileNameWithoutExtension(i), i)), IniSection,
-                    iniFilePath);
+                SaveCleanedIniSettings(iniFilePath);
             }
             return iniFilePath;
+        }
+
+        private static void SaveCleanedIniSettings(string iniFilePath)
+        {
+            var toBeCleanedFolders = GetPresetFolders();
+
+            int index = 0;
+            var enumerable = toBeCleanedFolders.Select(i => Tuple.Create($"路径{index++}", i));
+            IniUtility.SaveKeyValuesBySection(enumerable, "程序预置清理路径列表（只读）", iniFilePath);
+
+            index = 0;
+            var presetFolders = toBeCleanedFolders.Where(path => Directory.Exists(path)).ToList();
+            IniUtility.SaveKeyValuesBySection(
+                presetFolders.Select(i => Tuple.Create($"路径{index++}", i)), IniSection,
+                iniFilePath);
         }
 
         public static List<string> Folders => GetFolders();
@@ -42,6 +54,7 @@ namespace CleanCacheTool
             List<string> folders = new List<string>();
 
             folders.AddRange(PresetWindowsFolders);
+            folders.AddRange(GetUserDataFolders());
             folders.AddRange(GetPresetSeewoDataFolders());
             return folders;
         }
@@ -52,9 +65,21 @@ namespace CleanCacheTool
             @"C:\Windows\Installer\$PatchCache$\Managed",
             @"C:\Windows\SoftwareDistribution\Download",
             @"C:\Windows\Prefetch",
-            @"C:\Users\10167\AppData\Local\Temp",
             @"C:\Windows\assembly\temp",
         };
+
+        private static List<string> GetUserDataFolders()
+        {
+            var userFolder = Path.Combine(@"C:\Users\" + Environment.UserName);
+            List<string> folders = new List<string>();
+
+            string download = Path.Combine(userFolder, "Downloads");
+            folders.Add(download);
+            string localTemp = Path.Combine(userFolder, @"AppData\Local\Temp");
+            folders.Add(localTemp);
+
+            return folders;
+        }
 
         private static List<string> GetPresetSeewoDataFolders()
         {

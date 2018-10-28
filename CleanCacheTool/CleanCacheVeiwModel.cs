@@ -67,7 +67,6 @@ namespace CleanCacheTool
 
         private void CacheCacheByCmd(BackgroundWorker worker)
         {
-            _currentOperationError = string.Empty;
             worker.ReportProgress(0);
             var commands = ToCleanUpManager.GetCleanCacheCommands();
 
@@ -75,29 +74,45 @@ namespace CleanCacheTool
             foreach (var command in commands)
             {
                 index++;
-
+                var currentOperationError = string.Empty;
+                var currentOperationOutput = string.Empty;
+                var currentOperationDetail = string.Empty;
                 try
                 {
-                    _currentOperationDetail = $"执行{command}";
-                    ExecuteCmdHelper.ExecuteCmd(command);
+                    currentOperationDetail = $"执行{command}";
+                    worker.ReportProgress(-1,
+                        new ProgressChangedContent()
+                        {
+                            OperationDetail = currentOperationDetail,
+                        });
+
+                    var executeCmdResult = ExecuteCmdHelper.ExecuteCmd(command);
+                    currentOperationOutput = executeCmdResult;
                 }
                 catch (Exception e)
                 {
-                    _currentOperationError = $"{command}执行失败";
+                    currentOperationError = $"{command}执行失败";
                 }
                 finally
                 {
-                    worker.ReportProgress(Convert.ToInt32(Convert.ToDouble(index) / Convert.ToDouble(commands.Count)));
+                    worker.ReportProgress(Convert.ToInt32(Convert.ToDouble(index) / Convert.ToDouble(commands.Count)),
+                        new ProgressChangedContent()
+                        {
+                            OperationOutput = currentOperationOutput,
+                            OperationError = currentOperationError
+                        });
                 }
             }
         }
 
         private void CleanCacheUsingFileUtil(BackgroundWorker worker)
         {
-            _currentOperationError = string.Empty;
             //1.获取待删除文件
-            _currentOperationDetail = "获取待删除文件..";
-            worker.ReportProgress(0);
+            var currentOperationDetail = "获取待删除文件..";
+            worker.ReportProgress(0, new ProgressChangedContent()
+            {
+                OperationDetail = currentOperationDetail
+            });
 
             var toCleaningDictionary = GetCacheFiles();
             List<string> toCleaningFiles = new List<string>();
@@ -113,45 +128,76 @@ namespace CleanCacheTool
             int deleteIndex = 0;
             foreach (var toCleaningKeypair in toCleaningDictionary)
             {
-                _currentOperationDetail = $"删除{toCleaningKeypair.Key}";
+                currentOperationDetail = $"正在删除{toCleaningKeypair.Key}";
+                worker.ReportProgress(-1, new ProgressChangedContent()
+                {
+                    OperationDetail = currentOperationDetail,
+                });
+                long currentFolderCleanedSize = 0;
+                var currentOperationError = string.Empty;
+
                 foreach (var cacheFilePath in toCleaningKeypair.Value)
                 {
                     deleteIndex++;
-
                     try
                     {
-                        handledSize += new FileInfo(cacheFilePath).Length;
+                        var cacheFileSize = new FileInfo(cacheFilePath).Length;
+                        handledSize += cacheFileSize;
 
                         FileUtil.Delete(cacheFilePath);
+
+                        currentFolderCleanedSize += cacheFileSize;
                     }
                     catch (Exception exception)
                     {
-                        _currentOperationError = exception.Message;
+                        currentOperationError = exception.Message;
                     }
                     finally
                     {
-                        _cleanCacheProgressDetail = $"{deleteIndex}/{deleteFilesCount}";
+                        var cleanCacheProgressDetail = $"{deleteIndex}/{deleteFilesCount}";
                         //报告进度
                         var progress = totalSize == 0 ? 100 : handledSize * 100 / totalSize;
-                        worker.ReportProgress(Convert.ToInt32(progress));
+                        worker.ReportProgress(Convert.ToInt32(progress), new ProgressChangedContent()
+                        {
+                            ProgressDetail = cleanCacheProgressDetail,
+                            OperationError = currentOperationError
+                        });
                     }
                 }
+
+                worker.ReportProgress(-1, new ProgressChangedContent()
+                {
+                    OperationOutput = $"{toCleaningKeypair.Key}已删除{UnitConverter.ConvertSize(currentFolderCleanedSize)}"
+                });
             }
         }
 
         private void CleanCleanBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            Task.Run(() =>
+            if (e.ProgressPercentage >= 0)
             {
                 CleanCacheProgress = e.ProgressPercentage == 0 ? 1 : e.ProgressPercentage;
-                OnPropertyChanged(nameof(CleanCacheProgressDetail));
-                OnPropertyChanged(nameof(CurrentOperationDetail));
-
-                if (!string.IsNullOrEmpty(_currentOperationError))
+            }
+            if (e.UserState is ProgressChangedContent progressChangedContent)
+            {
+                if (!string.IsNullOrEmpty(progressChangedContent.ProgressDetail))
                 {
-                    _errorText += _currentOperationError + "\r\n";
+                    CleanCacheProgressDetail = progressChangedContent.ProgressDetail;
                 }
-            });
+                if (!string.IsNullOrEmpty(progressChangedContent.OperationDetail))
+                {
+                    CurrentOperationDetail = progressChangedContent.OperationDetail;
+                }
+                if (!string.IsNullOrEmpty(progressChangedContent.OperationOutput))
+                {
+                    _outputText += progressChangedContent.OperationOutput + "\r\n";
+                }
+                if (!string.IsNullOrEmpty(progressChangedContent.OperationError))
+                {
+                    _errorText += progressChangedContent.OperationError + "\r\n";
+                }
+            }
+
         }
 
         private void CleanCleanBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -160,13 +206,12 @@ namespace CleanCacheTool
             {
                 CleanCacheProgress = 0;
                 IsCleaningCache = false;
-                _currentOperationError = string.Empty;
                 MessageBox.Show($"清理课件缓存时遇到异常！\r\n{e.Error}");
             }
             else
             {
                 CleanCacheProgress = 100;
-                _currentOperationError = string.Empty;
+                OnPropertyChanged(nameof(OutputText));
                 OnPropertyChanged(nameof(ErrorText));
                 OnPropertyChanged(nameof(ErrorListCount));
 
@@ -181,13 +226,13 @@ namespace CleanCacheTool
             _currentWorker.Dispose();
         }
 
-        /// <summary>
-        /// 操作异常
-        /// </summary>
-        private string _currentOperationError = string.Empty;
+        #region 操作进度与异常
 
         private string _currentOperationDetail = string.Empty;
 
+        /// <summary>
+        /// 操作进度
+        /// </summary>
         public string CurrentOperationDetail
         {
             get => _currentOperationDetail;
@@ -198,18 +243,18 @@ namespace CleanCacheTool
             }
         }
 
-        public int ErrorListCount => Regex.Matches(ErrorText, "\r\n").Count;
+        #endregion
 
-        private string _errorText = string.Empty;
+        #region 清理进度显示
 
-        public string ErrorText
+        private bool _isCleaningCache = false;
+        public bool IsCleaningCache
         {
-            get => _errorText;
+            get => _isCleaningCache;
             set
             {
-                _errorText = value;
+                _isCleaningCache = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(ErrorListCount));
             }
         }
 
@@ -235,16 +280,42 @@ namespace CleanCacheTool
             }
         }
 
-        private bool _isCleaningCache = false;
-        public bool IsCleaningCache
+        #endregion
+
+        #region 输出日志
+
+        private string _outputText = string.Empty;
+
+        public string OutputText
         {
-            get => _isCleaningCache;
+            get => _outputText;
             set
             {
-                _isCleaningCache = value;
+                _outputText = value;
                 OnPropertyChanged();
             }
         }
+
+        #endregion
+
+        #region 错误列表
+
+        public int ErrorListCount => Regex.Matches(ErrorText, "\r\n").Count;
+
+        private string _errorText = string.Empty;
+
+        public string ErrorText
+        {
+            get => _errorText;
+            set
+            {
+                _errorText = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ErrorListCount));
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -334,5 +405,13 @@ namespace CleanCacheTool
         }
 
         public List<string> ToCleaningFiles { get; set; }
+    }
+
+    internal class ProgressChangedContent
+    {
+        public string OperationDetail { get; set; }
+        public string OperationOutput { get; set; }
+        public string OperationError { get; set; }
+        public string ProgressDetail { get; set; }
     }
 }
