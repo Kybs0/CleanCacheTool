@@ -71,6 +71,14 @@ namespace CleanCacheTool
             worker.ReportProgress(0);
             var commands = ToCleanUpManager.GetCleanCacheCommands();
 
+            List<string> toCleaningFiles = new List<string>();
+            foreach (var keyValuePair in GetCacheFiles())
+            {
+                toCleaningFiles.AddRange(keyValuePair.Value);
+            }
+
+            var totalSize = GetCurrentCacheSize();
+
             int index = 0;
             foreach (var command in commands)
             {
@@ -87,7 +95,9 @@ namespace CleanCacheTool
                         });
 
                     var executeCmdResult = ExecuteCmdHelper.ExecuteCmd(command);
-                    currentOperationOutput = executeCmdResult.Replace(ExecuteCmdHelper.ExistStr, string.Empty);
+                    //currentOperationOutput = executeCmdResult.Replace(ExecuteCmdHelper.ExistStr, string.Empty).Trim();
+                    var cleanedSize = totalSize - GetCurrentCacheSize();
+                    currentOperationOutput += $"执行{command}，共删除{UnitConverter.ConvertSize(cleanedSize)}";
                 }
                 catch (Exception e)
                 {
@@ -103,6 +113,17 @@ namespace CleanCacheTool
                         });
                 }
             }
+        }
+
+        private long GetCurrentCacheSize()
+        {
+            List<string> toCleaningFiles = new List<string>();
+            foreach (var keyValuePair in GetCacheFiles())
+            {
+                toCleaningFiles.AddRange(keyValuePair.Value);
+            }
+            var totalSize = toCleaningFiles.Select(i => new FileInfo(i)).Sum(i => i.Length);
+            return totalSize;
         }
 
         private void CleanCacheUsingFileUtil(BackgroundWorker worker)

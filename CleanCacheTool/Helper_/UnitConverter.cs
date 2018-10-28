@@ -14,6 +14,10 @@ namespace CleanCacheTool
         /// <returns>用于显示的字符串，只保留GB和TB的小数</returns>
         public static string ConvertSize(long value, bool isRound = true, string separators = "")
         {
+            if (value<0)
+            {
+                value = 0;
+            }
             var result = Convert(value, 1024, 1, isRound, separators, "B", "KB", "MB", "GB", "TB");
 
             //只保留GB和TB的小数
