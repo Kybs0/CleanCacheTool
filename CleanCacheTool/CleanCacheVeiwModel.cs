@@ -206,7 +206,7 @@ namespace CleanCacheTool
             {
                 CleanCacheProgress = 0;
                 IsCleaningCache = false;
-                MessageBox.Show($"清理课件缓存时遇到异常！\r\n{e.Error}");
+                MessageBox.Show($"清理缓存时遇到异常！\r\n{e.Error}");
             }
             else
             {
