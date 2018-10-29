@@ -46,6 +46,26 @@ namespace CleanCacheTool
             _currentWorker.DoWork += CleanCleanBackgroundWorker_DoWork;
             _currentWorker.RunWorkerCompleted += CleanCleanBackgroundWorker_RunWorkerCompleted;
             _currentWorker.RunWorkerAsync();
+
+            ExecuteDelayCommands();
+        }
+
+        /// <summary>
+        /// 时间较长，额外处理
+        /// </summary>
+        private async void ExecuteDelayCommands()
+        {
+            var cleanDelayedCommands = ToCleanUpManager.GetCleanDelayedCommands();
+            foreach (var cleanDelayedCommand in cleanDelayedCommands)
+            {
+                var totalSize = GetCurrentCacheSize();
+                await Task.Run(() =>
+                    {
+                        ExecuteCmdHelper.ExecuteCmd(cleanDelayedCommand);
+                    });
+                var cleanedSize = totalSize - GetCurrentCacheSize();
+                OutputText += $"执行{cleanDelayedCommand}，共删除{UnitConverter.ConvertSize(cleanedSize)}" + "\r\n";
+            }
         }
 
         private void CleanCleanBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -225,7 +245,7 @@ namespace CleanCacheTool
                 }
                 if (!string.IsNullOrEmpty(progressChangedContent.OperationOutput))
                 {
-                    _outputText += progressChangedContent.OperationOutput + "\r\n";
+                    OutputText += progressChangedContent.OperationOutput + "\r\n";
                 }
                 if (!string.IsNullOrEmpty(progressChangedContent.OperationError))
                 {
@@ -394,8 +414,6 @@ namespace CleanCacheTool
 
         #region 缓存列表
 
-        private Dictionary<string, List<string>> cacheFiles;
-
         /// <summary>
         /// 获取缓存列表
         /// </summary>
@@ -404,7 +422,7 @@ namespace CleanCacheTool
         {
             //if (cacheFiles == null)
             //{
-            cacheFiles = new Dictionary<string, List<string>>();
+            Dictionary<string, List<string>> cacheFiles = new Dictionary<string, List<string>>();
 
             var folders = ToCleanUpManager.Folders;
             foreach (var folder in folders)
