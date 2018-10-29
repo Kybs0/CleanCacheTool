@@ -113,7 +113,17 @@ namespace CleanCacheTool
                         {
                             OperationDetail = currentOperationDetail,
                         });
-
+                    if (command.Contains(@"C:\Windows\Installer\$PatchCache$"))
+                    {
+                        ExecuteCmdHelper.ExecuteCmd("Net Start msiserver /Y");
+                        ExecuteCmdHelper.ExecuteCmd("Net Stop msiserver /Y");
+                        ExecuteCmdHelper.ExecuteCmd(@"Reg Add HKLM\Software\Policies\Microsoft\Windows\Installer /v MaxPatchCacheSize /t REG_DWORD /d 0 /f");
+                        ExecuteCmdHelper.ExecuteCmd(command);
+                        ExecuteCmdHelper.ExecuteCmd("Net Start msiserver /Y");
+                        ExecuteCmdHelper.ExecuteCmd("Net Stop msiserver /Y");
+                        ExecuteCmdHelper.ExecuteCmd(@"Reg Add HKLM\Software\Policies\Microsoft\Windows\Installer /v MaxPatchCacheSize /t REG_DWORD /d 10 /f");
+                        ExecuteCmdHelper.ExecuteCmd("Net Start msiserver /Y");
+                    }
                     var executeCmdResult = ExecuteCmdHelper.ExecuteCmd(command);
                     //currentOperationOutput = executeCmdResult.Replace(ExecuteCmdHelper.ExistStr, string.Empty).Trim();
                     var cleanedSize = totalSize - GetCurrentCacheSize();
@@ -171,11 +181,11 @@ namespace CleanCacheTool
 
             var toCleaningDictionary = GetCacheFiles();
             List<string> toCleaningFiles = new List<string>();
-            foreach (var keyValuePair in GetCacheFiles())
+            foreach (var keyValuePair in toCleaningDictionary)
             {
                 toCleaningFiles.AddRange(keyValuePair.Value);
             }
-            var totalSize = toCleaningFiles.Select(i => new FileInfo(i)).Sum(i => i.Length);
+            var totalSize = GetCurrentCacheSize();
             long handledSize = 0;
 
             //2.使用管理员权限删除文件
@@ -384,14 +394,12 @@ namespace CleanCacheTool
             //课件缓存显示
             Task.Run(() =>
             {
-                List<string> files = new List<string>();
-                foreach (var keyValuePair in GetCacheFiles())
-                {
-                    files.AddRange(keyValuePair.Value);
-                }
-                var cacheSpaceSize = files.Select(i => new FileInfo(i)).Sum(fileInfo => fileInfo.Length);
+                var cacheSpaceSize = GetCurrentCacheSize();
 
-                CacheSize = UnitConverter.ConvertSize(cacheSpaceSize);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    CacheSize = UnitConverter.ConvertSize(cacheSpaceSize);
+                });
             });
         }
 
@@ -430,6 +438,7 @@ namespace CleanCacheTool
                 var allFiles = FolderUtil.GetAllFiles(folder);
                 cacheFiles.Add(folder, allFiles);
             }
+
             //}
 
             return cacheFiles;

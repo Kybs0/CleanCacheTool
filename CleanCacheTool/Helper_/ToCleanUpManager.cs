@@ -62,7 +62,6 @@ namespace CleanCacheTool
         private static List<string> PresetWindowsFolders = new List<string>()
         {
             @"C:\Windows\winsxs\Backup",
-            @"C:\Windows\Installer\$PatchCache$\Managed",
             @"C:\Windows\SoftwareDistribution\Download",
             @"C:\Windows\Prefetch",
             @"C:\Windows\assembly\temp",
@@ -109,7 +108,8 @@ namespace CleanCacheTool
             List<string> commands = new List<string>
             {
                 //删除DNS缓存
-                "ipconfig/flushDNS"
+                "ipconfig/flushDNS",
+                @"RmDir /q /s C:\Windows\Installer\$PatchCache$",
             };
 
             return commands;

@@ -178,12 +178,14 @@ namespace CleanCacheTool
         public static List<string> GetAllFiles(string folder)
         {
             var list = new List<string>();
-            var directoryInfo = new DirectoryInfo(folder);
-
-            //文件
-            list.AddRange(directoryInfo.GetFiles().Select(i => i.FullName));
-            //文件夹
-            directoryInfo.GetDirectories().ToList().ForEach(i => list.AddRange(GetAllFiles(i.FullName)));
+            if (Directory.Exists(folder))
+            {
+                var directoryInfo = new DirectoryInfo(folder);
+                //文件
+                list.AddRange(directoryInfo.GetFiles().Select(i => i.FullName));
+                //文件夹
+                directoryInfo.GetDirectories().ToList().ForEach(i => list.AddRange(GetAllFiles(i.FullName)));
+            }
 
             return list;
         }
