@@ -118,11 +118,25 @@ namespace CleanCacheTool
         private long GetCurrentCacheSize()
         {
             List<string> toCleaningFiles = new List<string>();
+            long totalSize = 0;
+
             foreach (var keyValuePair in GetCacheFiles())
             {
                 toCleaningFiles.AddRange(keyValuePair.Value);
             }
-            var totalSize = toCleaningFiles.Select(i => new FileInfo(i)).Sum(i => i.Length);
+
+            foreach (var cleaningFile in toCleaningFiles)
+            {
+                try
+                {
+                    totalSize += new FileInfo(cleaningFile).Length;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+
             return totalSize;
         }
 
