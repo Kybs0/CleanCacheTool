@@ -89,8 +89,6 @@ namespace CleanCacheTool
 
             string en5Temp = Path.Combine(en5DataPath, "Temp");
             folders.Add(en5Temp);
-            string en5Dependencies = Path.Combine(en5DataPath, "Dependencies");
-            folders.Add(en5Dependencies);
 
             string pptServiceTemp = Path.Combine(seewoDataPath, "PPTService", "Temp");
             folders.Add(pptServiceTemp);
