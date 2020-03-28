@@ -1,0 +1,2756 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Cvte.Escort.MVVM</name>
+    </assembly>
+    <members>
+        <member name="T:Cvte.Escort.ActionCommand">
+            <summary>
+            为普通的动作提供 <see cref="T:System.Windows.Input.ICommand"/> 的实现。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand.#ctor(System.Action,System.Func{System.Boolean})">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.ActionCommand"/> 的新实例，当 <see cref="T:System.Windows.Input.ICommand"/> 被执行时，将调用参数传入的动作。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand._action">
+            <summary>
+            此 <see cref="T:Cvte.Escort.ActionCommand"/> 中用于执行的任务本身。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand._canExecute">
+            <summary>
+            此 <see cref="T:Cvte.Escort.ActionCommand"/> 中用于判定任务是否可以执行。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand.System#Windows#Input#ICommand#Execute(System.Object)">
+            <summary>
+            执行任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand.Execute">
+            <summary>
+            执行任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand.System#Windows#Input#ICommand#CanExecute(System.Object)">
+            <summary>
+            判断命令何时可用。
+            </summary>
+        </member>
+        <member name="E:Cvte.Escort.ActionCommand.CanExecuteChanged">
+            <summary>
+            当命令的可执行性改变时发生。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.AsyncCommand">
+            <summary>
+            为异步任务提供 <see cref="T:System.Windows.Input.ICommand"/>。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand.#ctor(System.Func{System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand"/>。
+            可选的，可以指定异步任务的重新进入策略。
+            </summary>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand.#ctor(System.Func{Cvte.Escort.AsyncExecutingContext,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand"/>。
+            可选的，可以指定异步任务的重新进入策略。
+            </summary>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="F:Cvte.Escort.AsyncCommand._asyncAction">
+            <summary>
+            异步任务。执行此委托将执行具体的异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand.ExecuteAsyncCore(System.Object)">
+            <inheritdoc />
+            <summary>
+            派生类重写此方法时，实际执行异步任务。
+            </summary>
+            <param name="parameter">由 <see cref="T:System.Windows.Input.ICommand" /> 接口传入的参数。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand.ExecuteAsync">
+            <summary>
+            执行此命令指定的异步任务。
+            如果任务已经在执行，则根据 <see cref="T:Cvte.Escort.ReentrancyPolicy"/> 指定的重新进入策略重新进入。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.AsyncCommandBase">
+            <summary>
+            为异步任务提供 <see cref="T:System.Windows.Input.ICommand" />。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.#ctor(Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            当派生类使用此构造函数构造父类时，指定异步任务的重新进入策略。
+            派生类需要自己处理异步任务本身，需要重写 <see cref="M:Cvte.Escort.AsyncCommandBase.ExecuteAsyncCore(System.Object)"/> 方法来执行异步任务。
+            </summary>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="F:Cvte.Escort.AsyncCommandBase._reentrancyInvoker">
+            <summary>
+            用于决定异步任务执行时机的重新进入策略状态机。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.AsyncCommandBase.ReentrancyPolicy">
+            <summary>
+            获取此命令中异步任务的重新进入策略。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.AsyncCommandBase.IsRunning">
+            <inheritdoc />
+            <summary>
+            指示当前命令是否正在执行异步任务。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.AsyncCommandBase.Progress">
+            <summary>
+            指示当前命令中异步任务的执行进度，值范围为 [0,1]，如果实现者没有报告进度，则执行完毕之前会一直保持 0，执行完后为 1。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.AsyncCommandBase.CanExecute">
+            <summary>
+            获取一个值，该值指示当前此异步命令是否可以被执行。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.ReevaluateCanExecute">
+            <summary>
+            重新评估 <see cref="P:Cvte.Escort.AsyncCommandBase.CanExecute"/> 属性的值。
+            如果此前强制设置过 <see cref="P:Cvte.Escort.AsyncCommandBase.CanExecute"/> 的值，那么通过此方法可以清除强制设置的值，让其恢复自动管理的状态。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.System#Windows#Input#ICommand#Execute(System.Object)">
+            <inheritdoc />
+            <summary>
+            执行此命令指定的异步任务，但不会等待。
+            如果任务已经在执行，则根据 <see cref="P:Cvte.Escort.AsyncCommandBase.ReentrancyPolicy"/> 指定的重新进入策略重新进入。
+            </summary>
+            <param name="parameter">由 <see cref="T:System.Windows.Input.ICommand"/> 接口传入的参数。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.Cvte#Escort#IAsyncCommand#ExecuteAsync(System.Object)">
+            <inheritdoc />
+            <summary>
+            执行此命令指定的异步任务。
+            如果任务已经在执行，则根据 <see cref="P:Cvte.Escort.AsyncCommandBase.ReentrancyPolicy" /> 指定的重新进入策略重新进入。
+            </summary>
+            <param name="parameter">由 <see cref="T:System.Windows.Input.ICommand" /> 接口传入的参数。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.ExecuteAsync(System.Object)">
+            <summary>
+            在派生类中调用此方法以执行此命令指定的异步任务。
+            如果任务已经在执行，则根据 <see cref="P:Cvte.Escort.AsyncCommandBase.ReentrancyPolicy"/> 指定的重新进入策略重新进入。
+            </summary>
+            <param name="parameter">由 <see cref="T:System.Windows.Input.ICommand"/> 接口传入的参数。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.ExecuteWithStatesAsync(System.Object)">
+            <summary>
+            执行 <see cref="M:Cvte.Escort.AsyncCommandBase.ExecuteAsyncCore(System.Object)"/> 方法，并在起止时更新进度和状态。
+            注意：此方法由 <see cref="T:Cvte.Escort.ReentrancyStateMachine"/> 决定调用时机以便处理异步任务的重新进入。
+            </summary>
+            <param name="parameter">由 <see cref="T:System.Windows.Input.ICommand"/> 接口传入的参数。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.ExecuteAsyncCore(System.Object)">
+            <summary>
+            派生类重写此方法时，实际执行异步任务。
+            </summary>
+            <param name="parameter">由 <see cref="T:System.Windows.Input.ICommand"/> 接口传入的参数。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.Cancel">
+            <summary>
+            尚未实现。取消命令中正在执行的异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.Cvte#Escort#IAsyncProgress#ReportProgress(System.Double)">
+            <inheritdoc />
+            <summary>
+            为异步任务报告进度百分比，取值范围为 [0, 1]。
+            </summary>
+            <param name="progress">进度百分比，取值范围为 [0, 1]。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.System#Windows#Input#ICommand#CanExecute(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="E:Cvte.Escort.AsyncCommandBase.CanExecuteChanged">
+            <inheritdoc />
+            <summary>
+            当命令的可执行性改变时发生。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommandBase.OnCanExecuteChanged">
+            <summary>
+            引发 <see cref="E:Cvte.Escort.AsyncCommandBase.CanExecuteChanged"/> 事件。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.AsyncExecutingContext">
+            <summary>
+            为 <see cref="T:Cvte.Escort.AsyncCommand"/> 的异步命令执行提供命令参数和命令状态的修改。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.AsyncExecutingContext._asyncProgress">
+            <summary>
+            为命令的实现方提供控制异步任务进度的方法。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncExecutingContext.#ctor(Cvte.Escort.IAsyncProgress)">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.AsyncExecutingContext"/> 的新实例。并同时指定命令的参数。
+            </summary>
+            <param name="asyncCommand">异步命令的进度控制。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncExecutingContext.ReportProgress(System.Double)">
+            <summary>
+            为异步任务报告进度百分比，取值范围为 [0, 1]。
+            </summary>
+            <param name="progress">进度百分比，取值范围为 [0, 1]。</param>
+        </member>
+        <member name="T:Cvte.Escort.AsyncViewCommand">
+            <inheritdoc />
+            <summary>
+            为 <see cref="N:Cvte.Escort" /> 中所有种类的 <see cref="T:System.Windows.Input.ICommand" /> 提供异步执行的通用命令代理。
+            </summary>
+        </member>
+        <member name="E:Cvte.Escort.AsyncViewCommand.Starting">
+            <summary>
+            当命令准备开始执行时发生。
+            如果命令的执行需要用户使用 UI 交互产生额外的参数，则在此处使用获取参数。
+            例如，可以在此事件中显示一个打开文件对话框，然后将所选文件的完全限定路径作为命令参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncViewCommand.OnStarting">
+            <summary>
+            引发异步的 <see cref="E:Cvte.Escort.AsyncViewCommand.Starting"/> 事件，并在事件的执行异步结束之后继续执行命令的其他部分。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncViewCommand.CreateInstanceCore">
+            <inheritdoc />
+        </member>
+        <member name="T:Cvte.Escort.CommandContext">
+            <summary>
+            在 <see cref="T:Cvte.Escort.Commands.IParameterProvider`1"/> 提供值的过程中对提供流程进行控制。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.CommandContext.IsCanceled">
+            <summary>
+            获取一个值，该值指示命令获取参数的过程中是否发现无法获取参数导致命令被取消。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.CommandContext.Cancel">
+            <summary>
+            取消提供值，这将同时取消命令的执行（如果命令支持）。
+            在 <see cref="N:Cvte.Escort"/> 中，所有的命令都支持被此方法取消。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.CommandEventManager">
+            <summary>
+            管理 <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> 事件的执行时机。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.CommandEventManager.AddHandler(System.Windows.Input.ICommand,System.Delegate)">
+            <summary>
+            当执行命令的 add 方法时，调用此方法以添加 <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> 事件执行时机的管理。
+            </summary>
+            <param name="command">命令</param>
+            <param name="handler">命令处理函数。</param>
+        </member>
+        <member name="M:Cvte.Escort.CommandEventManager.RemoveHandler(System.Windows.Input.ICommand,System.Delegate)">
+            <summary>
+            当执行命令的 remove 方法时，调用此方法以移除 <see cref="E:System.Windows.Input.ICommand.CanExecuteChanged"/> 事件执行时机的管理。
+            </summary>
+            <param name="command">命令</param>
+            <param name="handler">命令处理函数</param>
+        </member>
+        <member name="T:Cvte.Escort.ExclusiveCommand">
+            <summary>
+            为 <see cref="T:Cvte.Escort.ViewModelBase"/> 统一管理 <see cref="T:Cvte.Escort.IAsyncCommand"/> 的互斥行为提供扩展方法。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ExclusiveCommand.ManagedAsyncCommandDictionary">
+            <summary>
+            记录所有被管理的互斥异步命令。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.ManageExclusiveCommand(Cvte.Escort.ViewModelBase,Cvte.Escort.AsyncCommandBase)">
+            <summary>
+            将某个 <see cref="T:Cvte.Escort.ViewModelBase"/> 中创建的 <see cref="T:Cvte.Escort.AsyncCommandBase"/> 加入到异步互斥命令集合中进行统一管理。
+            </summary>
+            <param name="viewModel">异步互斥命令的互斥边界，在此 ViewModel 中。</param>
+            <param name="asyncCommand">互斥的异步命令。</param>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.FindExclusiveCommandsFrom(Cvte.Escort.ViewModelBase)">
+            <summary>
+            找到被某个特定 <see cref="T:Cvte.Escort.ViewModelBase"/> 互斥边界中的所有互斥的 <see cref="T:Cvte.Escort.AsyncCommandBase"/>。
+            </summary>
+            <param name="viewModel">异步命令的互斥边界。</param>
+            <returns>在指定互斥边界下的所有互斥的异步命令。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.FindExclusiveCommandsFrom(Cvte.Escort.AsyncCommandBase)">
+            <summary>
+            找到与指定 <see cref="T:Cvte.Escort.AsyncCommandBase"/> 异步命令互斥的所有异步命令。
+            </summary>
+            <param name="asyncCommand">查找与之互斥的异步命令。</param>
+            <returns>与指定异步命令互斥的所有异步命令。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand(Cvte.Escort.ViewModelBase,System.Func{System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand"/>。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand(Cvte.Escort.ViewModelBase,System.Func{Cvte.Escort.AsyncExecutingContext,System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand"/>。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand``1(Cvte.Escort.ViewModelBase,System.Func{``0,System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand`1"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand`1"/>。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand``1(Cvte.Escort.ViewModelBase,System.Func{Cvte.Escort.AsyncExecutingContext,``0,System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand`1"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand`1"/>。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand``2(Cvte.Escort.ViewModelBase,System.Func{``0,``1,System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand`2"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand`2"/>。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand``2(Cvte.Escort.ViewModelBase,System.Func{Cvte.Escort.AsyncExecutingContext,``0,``1,System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand`2"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand`2"/>。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand``3(Cvte.Escort.ViewModelBase,System.Func{``0,``1,``2,System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand`3"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand`3"/>。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand``3(Cvte.Escort.ViewModelBase,System.Func{Cvte.Escort.AsyncExecutingContext,``0,``1,``2,System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand`3"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand`3"/>。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand``4(Cvte.Escort.ViewModelBase,System.Func{``0,``1,``2,``3,System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand`4"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand`4"/>。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ExclusiveCommand.CreateExclusiveCommand``4(Cvte.Escort.ViewModelBase,System.Func{Cvte.Escort.AsyncExecutingContext,``0,``1,``2,``3,System.Threading.Tasks.Task})">
+            <summary>
+            创建用于执行指定异步任务 <paramref name="asyncAction"/> 的 <see cref="T:Cvte.Escort.AsyncCommand`4"/>。
+            从同一个 <see cref="T:Cvte.Escort.ViewModelBase"/> 创建出来的 <see cref="T:Cvte.Escort.IAsyncCommand"/> 将在命令执行期间互斥。
+            </summary>
+            <param name="viewModel">异步命令将在此 <see cref="T:Cvte.Escort.ViewModelBase"/> 范围内互斥。</param>
+            <param name="asyncAction">异步命令中执行的异步任务。</param>
+            <returns>具有互斥属性的 <see cref="T:Cvte.Escort.AsyncCommand`4"/>。</returns>
+        </member>
+        <member name="T:Cvte.Escort.ActionCommand`1">
+            <summary>
+            表示一个必须提供参数才能执行的命令。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`1.#ctor(System.Action{`0},System.Func{System.Boolean})">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.ActionCommand"/> 的新实例，当 <see cref="T:System.Windows.Input.ICommand"/> 被执行时，将调用参数传入的动作。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand`1._action">
+            <summary>
+            用于接受所提供的参数并执行的委托。
+            只可能是 Action{T} 或 Func{T, Task}。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand`1._canExecute">
+            <summary>
+            此 <see cref="T:Cvte.Escort.ActionCommand`1"/> 中用于判定任务是否可以执行。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`1.Execute(`0)">
+            <summary>
+            使用指定的参数执行此命令。
+            框架中没有约定参数值是否允许为 null，这由参数定义时的泛型类型约定（C#8.0）或由命令的实现者约定。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`1.ExecuteAsync(System.Object)">
+            <summary>
+            尝试以异步的方式执行此同步命令。因为参数的获取可能是异步的（例如使用 <see cref="T:Cvte.Escort.Commands.IAsyncParameterProvider`1"/>），所以此方法也必须是异步的。
+            对于单个泛型参数的 <see cref="T:Cvte.Escort.ActionCommand`1"/> 而言，传入的参数由业务定义含义，所以不能保证 null 值的合理性。
+            </summary>
+            <param name="parameter">接口中传入的原始参数。</param>
+        </member>
+        <member name="E:Cvte.Escort.ActionCommand`1.CanExecuteChanged">
+            <inheritdoc />
+            <summary>
+            当命令的可执行性改变时发生。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.AsyncCommand`1">
+            <inheritdoc />
+            <summary>
+            为具有特定类型命令参数的异步任务提供 <see cref="T:System.Windows.Input.ICommand" />。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`1.#ctor(System.Func{`0,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建一个没有异步控制流的，带一个或多个泛型参数的异步命令。同时可以指定此异步的重新进入策略。
+            </summary>
+            <param name="asyncAction">异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`1.#ctor(System.Func{Cvte.Escort.AsyncExecutingContext,`0,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建一个带有异步流程控制上下文的，带一个或多个泛型参数的异步命令。同时可以指定此异步的重新进入策略。
+            </summary>
+            <param name="asyncAction">带有异步流程控制上下文的异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="F:Cvte.Escort.AsyncCommand`1._asyncAction">
+            <summary>
+            异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`1.ExecuteAsyncCore(System.Object)">
+            <summary>
+            实际执行异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`1.ExecuteAsync(`0)">
+            <summary>
+            以给定的参数执行此命令指定的异步任务。
+            如果任务已经在执行，则根据 <see cref="T:Cvte.Escort.ReentrancyPolicy"/> 指定的重新进入策略重新进入。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.CommandParameter`1">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中多泛型的命令提供只读的泛型参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.CommandParameter`1.#ctor(`0)">
+            <summary>
+            将传入的参数作为只读的命令参数，以便让 <see cref="T:Cvte.Escort.ActionCommand`1"/> 能够使用。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.Commands.CommandParameter`1.Value">
+            <summary>
+            获取预指定的只读命令参数的值。
+            由于部分业务中 null 可能是合理的值，所以在 C#8.0 以下的版本中，值是否为 null 需要业务定义。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.AsyncCommandParameter`1">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中多泛型的命令提供可异步获取的泛型参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.AsyncCommandParameter`1.#ctor(System.Func{System.Threading.Tasks.Task{`0}})">
+            <summary>
+            将传入的参数作为只读的命令参数，以便让 <see cref="T:Cvte.Escort.ActionCommand`1"/> 能够使用。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.AsyncCommandParameter`1.ProvideParameterAsync(Cvte.Escort.CommandContext)">
+            <summary>
+            异步提供多泛型参数值，得到的值将提供给命令作为参数。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.IParameterProvider`1">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令提供参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.IParameterProvider`1.ProvideParameter(Cvte.Escort.CommandContext)">
+            <summary>
+            当命令需要参数时，将执行此方法，并提供对命令信息控制的上下文信息。
+            </summary>
+            <param name="context">可以对命令的执行过程进行控制的上下文信息。</param>
+        </member>
+        <member name="T:Cvte.Escort.Commands.IAsyncParameterProvider`1">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令提供可以异步获取的参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.IAsyncParameterProvider`1.ProvideParameterAsync(Cvte.Escort.CommandContext)">
+            <summary>
+            当命令需要参数时，将异步执行此方法，并提供对命令信息控制的上下文信息。
+            </summary>
+            <param name="context">可以对命令的执行过程进行控制的上下文信息。</param>
+        </member>
+        <member name="T:Cvte.Escort.Commands.ParameterExtractor">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令参数提供泛型解析器。
+            </summary>
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令参数提供泛型解析器。
+            </summary>
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令参数提供泛型解析器。
+            </summary>
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令参数提供泛型解析器。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.ExtractAsync``1(System.Object)">
+            <summary>
+            从命令的 <see cref="T:System.Object"/> 参数中解析出一个或多个泛型参数值。由于解析过程可能是异步的，所以此方法也必须是异步的。
+            原则上，参数 <paramref name="parameter"/> 不允许为 null，但由于其可能为值类型，所以没有抛出异常进行限定。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.FetchParameter``1(Cvte.Escort.Commands.IParameterProvider{``0})">
+            <summary>
+            从 <see cref="T:Cvte.Escort.Commands.IParameterProvider`1"/> 提取单个或多个参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.FetchParameterAsync``1(Cvte.Escort.Commands.IAsyncParameterProvider{``0})">
+            <summary>
+            从 <see cref="T:Cvte.Escort.Commands.IAsyncParameterProvider`1"/> 异步提取单个或多个参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.ExtractAsync``2(System.Object)">
+            <summary>
+            从命令的 <see cref="T:System.Object"/> 参数中解析出一个或多个泛型参数值。由于解析过程可能是异步的，所以此方法也必须是异步的。
+            参数 <paramref name="parameter"/> 不允许为 null。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.FetchParameter``2(Cvte.Escort.Commands.IParameterProvider{``0,``1})">
+            <summary>
+            从 <see cref="T:Cvte.Escort.Commands.IParameterProvider`2"/> 提取单个或多个参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.FetchParameterAsync``2(Cvte.Escort.Commands.IAsyncParameterProvider{``0,``1})">
+            <summary>
+            从 <see cref="T:Cvte.Escort.Commands.IAsyncParameterProvider`2"/> 异步提取单个或多个参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.ExtractAsync``3(System.Object)">
+            <summary>
+            从命令的 <see cref="T:System.Object"/> 参数中解析出一个或多个泛型参数值。由于解析过程可能是异步的，所以此方法也必须是异步的。
+            参数 <paramref name="parameter"/> 不允许为 null。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.FetchParameter``3(Cvte.Escort.Commands.IParameterProvider{``0,``1,``2})">
+            <summary>
+            从 <see cref="T:Cvte.Escort.Commands.IParameterProvider`3"/> 提取单个或多个参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.FetchParameterAsync``3(Cvte.Escort.Commands.IAsyncParameterProvider{``0,``1,``2})">
+            <summary>
+            从 <see cref="T:Cvte.Escort.Commands.IAsyncParameterProvider`3"/> 异步提取单个或多个参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.ExtractAsync``4(System.Object)">
+            <summary>
+            从命令的 <see cref="T:System.Object"/> 参数中解析出一个或多个泛型参数值。由于解析过程可能是异步的，所以此方法也必须是异步的。
+            参数 <paramref name="parameter"/> 不允许为 null。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.FetchParameter``4(Cvte.Escort.Commands.IParameterProvider{``0,``1,``2,``3})">
+            <summary>
+            从 <see cref="T:Cvte.Escort.Commands.IParameterProvider`4"/> 提取单个或多个参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.ParameterExtractor.FetchParameterAsync``4(Cvte.Escort.Commands.IAsyncParameterProvider{``0,``1,``2,``3})">
+            <summary>
+            从 <see cref="T:Cvte.Escort.Commands.IAsyncParameterProvider`4"/> 异步提取单个或多个参数。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.CommandParameter`2">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中多泛型的命令提供只读的泛型参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.CommandParameter`2.#ctor(`0,`1)">
+            <summary>
+            将传入的参数作为只读的命令参数，以便让 <see cref="T:Cvte.Escort.ActionCommand`2"/> 能够使用。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.Commands.CommandParameter`2.Value">
+            <summary>
+            获取预指定的只读命令参数的值。
+            由于部分业务中 null 可能是合理的值，所以在 C#8.0 以下的版本中，值是否为 null 需要业务定义。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.AsyncCommandParameter`2">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中多泛型的命令提供可异步获取的泛型参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.AsyncCommandParameter`2.#ctor(System.Func{System.Threading.Tasks.Task{System.ValueTuple{`0,`1}}})">
+            <summary>
+            将传入的参数作为只读的命令参数，以便让 <see cref="T:Cvte.Escort.ActionCommand`2"/> 能够使用。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.AsyncCommandParameter`2.ProvideParameterAsync(Cvte.Escort.CommandContext)">
+            <summary>
+            异步提供多泛型参数值，得到的值将提供给命令作为参数。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.CommandParameter`3">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中多泛型的命令提供只读的泛型参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.CommandParameter`3.#ctor(`0,`1,`2)">
+            <summary>
+            将传入的参数作为只读的命令参数，以便让 <see cref="T:Cvte.Escort.ActionCommand`3"/> 能够使用。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.Commands.CommandParameter`3.Value">
+            <summary>
+            获取预指定的只读命令参数的值。
+            由于部分业务中 null 可能是合理的值，所以在 C#8.0 以下的版本中，值是否为 null 需要业务定义。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.AsyncCommandParameter`3">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中多泛型的命令提供可异步获取的泛型参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.AsyncCommandParameter`3.#ctor(System.Func{System.Threading.Tasks.Task{System.ValueTuple{`0,`1,`2}}})">
+            <summary>
+            将传入的参数作为只读的命令参数，以便让 <see cref="T:Cvte.Escort.ActionCommand`3"/> 能够使用。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.AsyncCommandParameter`3.ProvideParameterAsync(Cvte.Escort.CommandContext)">
+            <summary>
+            异步提供多泛型参数值，得到的值将提供给命令作为参数。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.CommandParameter`4">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中多泛型的命令提供只读的泛型参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.CommandParameter`4.#ctor(`0,`1,`2,`3)">
+            <summary>
+            将传入的参数作为只读的命令参数，以便让 <see cref="T:Cvte.Escort.ActionCommand`4"/> 能够使用。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.Commands.CommandParameter`4.Value">
+            <summary>
+            获取预指定的只读命令参数的值。
+            由于部分业务中 null 可能是合理的值，所以在 C#8.0 以下的版本中，值是否为 null 需要业务定义。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.AsyncCommandParameter`4">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中多泛型的命令提供可异步获取的泛型参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.AsyncCommandParameter`4.#ctor(System.Func{System.Threading.Tasks.Task{System.ValueTuple{`0,`1,`2,`3}}})">
+            <summary>
+            将传入的参数作为只读的命令参数，以便让 <see cref="T:Cvte.Escort.ActionCommand`4"/> 能够使用。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.AsyncCommandParameter`4.ProvideParameterAsync(Cvte.Escort.CommandContext)">
+            <summary>
+            异步提供多泛型参数值，得到的值将提供给命令作为参数。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Commands.IParameterProvider`2">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令提供参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.IParameterProvider`2.ProvideParameter(Cvte.Escort.CommandContext)">
+            <summary>
+            当命令需要参数时，将执行此方法，并提供对命令信息控制的上下文信息。
+            </summary>
+            <param name="context">可以对命令的执行过程进行控制的上下文信息。</param>
+        </member>
+        <member name="T:Cvte.Escort.Commands.IAsyncParameterProvider`2">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令提供可以异步获取的参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.IAsyncParameterProvider`2.ProvideParameterAsync(Cvte.Escort.CommandContext)">
+            <summary>
+            当命令需要参数时，将异步执行此方法，并提供对命令信息控制的上下文信息。
+            </summary>
+            <param name="context">可以对命令的执行过程进行控制的上下文信息。</param>
+        </member>
+        <member name="T:Cvte.Escort.Commands.IParameterProvider`3">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令提供参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.IParameterProvider`3.ProvideParameter(Cvte.Escort.CommandContext)">
+            <summary>
+            当命令需要参数时，将执行此方法，并提供对命令信息控制的上下文信息。
+            </summary>
+            <param name="context">可以对命令的执行过程进行控制的上下文信息。</param>
+        </member>
+        <member name="T:Cvte.Escort.Commands.IAsyncParameterProvider`3">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令提供可以异步获取的参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.IAsyncParameterProvider`3.ProvideParameterAsync(Cvte.Escort.CommandContext)">
+            <summary>
+            当命令需要参数时，将异步执行此方法，并提供对命令信息控制的上下文信息。
+            </summary>
+            <param name="context">可以对命令的执行过程进行控制的上下文信息。</param>
+        </member>
+        <member name="T:Cvte.Escort.Commands.IParameterProvider`4">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令提供参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.IParameterProvider`4.ProvideParameter(Cvte.Escort.CommandContext)">
+            <summary>
+            当命令需要参数时，将执行此方法，并提供对命令信息控制的上下文信息。
+            </summary>
+            <param name="context">可以对命令的执行过程进行控制的上下文信息。</param>
+        </member>
+        <member name="T:Cvte.Escort.Commands.IAsyncParameterProvider`4">
+            <summary>
+            为 <see cref="N:Cvte.Escort"/> 中的命令提供可以异步获取的参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Commands.IAsyncParameterProvider`4.ProvideParameterAsync(Cvte.Escort.CommandContext)">
+            <summary>
+            当命令需要参数时，将异步执行此方法，并提供对命令信息控制的上下文信息。
+            </summary>
+            <param name="context">可以对命令的执行过程进行控制的上下文信息。</param>
+        </member>
+        <member name="T:Cvte.Escort.IAsyncCommand">
+            <summary>
+            表示命令的执行是异步进行的。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.IAsyncCommand.IsRunning">
+            <summary>
+            指示当前命令是否正在执行异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IAsyncCommand.ExecuteAsync(System.Object)">
+            <summary>
+            异步执行此命令并等待其返回。
+            </summary>
+            <param name="parameter">异步命令执行过程中需要传递给命令执行方的数据。</param>
+        </member>
+        <member name="T:Cvte.Escort.IAsyncProgress">
+            <summary>
+            表示此异步任务支持报告进度。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IAsyncProgress.ReportProgress(System.Double)">
+            <summary>
+            为异步任务报告进度百分比，取值范围为 [0, 1]。
+            </summary>
+            <param name="progress">进度百分比，取值范围为 [0, 1]。</param>
+        </member>
+        <member name="T:Cvte.Escort.ViewCommand">
+            <summary>
+            为 <see cref="N:Cvte.Escort" /> 中所有种类的 <see cref="T:System.Windows.Input.ICommand" /> 提供通用的命令代理。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ViewCommand.CommandProperty">
+            <summary>
+            标识 <see cref="P:Cvte.Escort.ViewCommand.Command"/> 的依赖项属性。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ViewCommand.Command">
+            <summary>
+            请使用 <see cref="T:System.Windows.Data.Binding"/> 从 ViewModel 中获取一个命令，并将此命令设置到此属性中。
+            如果此属性没有绑定或绑定过程失败，则此属性为 null。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewCommand.OnCommandChanged(System.Windows.Input.ICommand,System.Windows.Input.ICommand)">
+            <summary>
+            当 <see cref="P:Cvte.Escort.ViewCommand.Command"/> 属性改变时。
+            </summary>
+        </member>
+        <member name="E:Cvte.Escort.ViewCommand.Starting">
+            <summary>
+            当命令准备开始执行时发生。
+            如果命令的执行需要用户使用 UI 交互产生额外的参数，则在此处使用获取参数。
+            例如，可以在此事件中显示一个打开文件对话框，然后将所选文件的完全限定路径作为命令参数。
+            </summary>
+        </member>
+        <member name="E:Cvte.Escort.ViewCommand.ExceptionOccurred">
+            <summary>
+            当命令执行过程中发生异常时发生。
+            无论时普通的命令还是异步命令，发生的异常都会被捕捉并在此事件中报告给 UI。
+            通常，UI 应该根据具体的异常信息进行不同种类的 UI 提示。
+            </summary>
+        </member>
+        <member name="E:Cvte.Escort.ViewCommand.Completed">
+            <summary>
+            当命令执行结束时发生，但如果命令中发生了异常，则不会发生此事件。
+            通常可以在此处执行一些收尾的 UI 或交互。
+            例如，可以在此事件中显示一个提示框，告知用户文件已经成功保存到指定的位置。
+            </summary>
+        </member>
+        <member name="E:Cvte.Escort.ViewCommand.CanExecuteChanged">
+            <summary>
+            当命令的可执行性改变时发生。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewCommand.OnCanExecuteChanged(System.Object,System.EventArgs)">
+            <summary>
+            当 <see cref="P:Cvte.Escort.ViewCommand.Command"/> 命令中的可执行性改变时发生。
+            引发此命令的可执行性。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewCommand.Execute">
+            <summary>
+            执行命令。注意：由于内部绑定的命令有可能是异步命令，所以此方法可能会在异步方法返回前返回。
+            这将开始执行其内部绑定的命令，而内部命令的参数将从 <see cref="E:Cvte.Escort.ViewCommand.Starting"/> 事件中获取。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewCommand.ExecuteAsync">
+            <summary>
+            异步等待命令的执行。这将开始执行其内部绑定的命令，而内部命令的参数将从 <see cref="E:Cvte.Escort.ViewCommand.Starting"/> 事件中获取。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewCommand.OnStarting">
+            <summary>
+            在派生类中重写此方法时，引发 <see cref="E:Cvte.Escort.ViewCommand.Starting"/> 事件。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewCommand.System#Windows#Input#ICommand#CanExecute(System.Object)">
+            <inheritdoc />
+            <summary>
+            使用原始命令的 <see cref="M:System.Windows.Input.ICommand.CanExecute(System.Object)" /> 以确认可执行性。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewCommand.CreateInstanceCore">
+            <inheritdoc />
+        </member>
+        <member name="T:Cvte.Escort.CommandStartingEventArgs">
+            <summary>
+            为 ViewCommand.Starting 事件提供参数。
+            如果指定了 <see cref="P:Cvte.Escort.CommandStartingEventArgs.Parameter"/> 属性，则此属性所提供的参数将传入 ViewModel 的命令参数中。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.CommandStartingEventArgs.Parameter">
+            <summary>
+            指定命令应该使用的参数。
+            <para>可以使用任意的 object 类型的参数，这类似于为 <see cref="T:System.Windows.Input.ICommand"/> 的执行传入普通参数。</para>
+            <para>可以使用 <see cref="T:System.ValueTuple`1"/> 指定元组参数；</para>
+            <para>可以使用 <see cref="T:Cvte.Escort.Commands.CommandParameter`1"/> 指定只读参数；</para>
+            <para>可以使用 <see cref="T:Cvte.Escort.Commands.AsyncCommandParameter`1"/> 使用异步任务获取并提供参数；</para>
+            <para>可以使用自定义的 <see cref="T:Cvte.Escort.Commands.IParameterProvider`1"/> 或 <see cref="T:Cvte.Escort.Commands.IAsyncParameterProvider`1"/> 提供参数；</para>
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.CommandStartingEventArgs.IsCanceled">
+            <summary>
+            获取一个值，该值指示命令应该立即取消执行。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.CommandStartingEventArgs.Cancel">
+            <summary>
+            取消执行此命令。通常意味着命令需要额外的命令参数，但用户没有为此提供合适的参数。
+            例如，用户点击了打开文件对话框中的“取消”按钮。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.CommandCompletedEventArgs">
+            <summary>
+            为 ViewCommand.Completed 事件提供参数。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.ExceptionOccurredEventArgs">
+            <summary>
+            为 ViewCommand.ExceptionOccurred 事件提供参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ExceptionOccurredEventArgs.#ctor(System.Exception)">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.ExceptionOccurredEventArgs"/> 的新实例。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ExceptionOccurredEventArgs.Exception">
+            <summary>
+            获取命令执行过程中发生的异常；可以为 null，说明此命令执行的中断不是由异常导致的，而是主动中断。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ExceptionOccurredEventArgs.Identifier">
+            <summary>
+            获取命令执行过程中发生异常时，代表具体异常的标识符；可以为 null，说明此时发生了常规的异常，没有指定标识符。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.DI.CompositionHost">
+            <inheritdoc />
+            <summary>
+            为 <see cref="T:Cvte.Escort.ViewModelProvider" /> 提供简易的高性能的依赖反转方案。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.DI.CompositionHost._sharingInstances">
+            <summary>
+            指示容器中是否共享同一个实例。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.DI.CompositionHost._exports">
+            <summary>
+            记录可以进行导出的类型及其可以延迟创建的实例。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.DI.CompositionHost._creates">
+            <summary>
+            记录可以进行导出的类型及其创建实例的方法。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.DI.CompositionHost._exportInfoDictionary">
+            <summary>
+            无论类型是否能导出，都记录其收集到的类型信息。将来导出和注入都需要使用。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.DI.CompositionHost.#ctor(System.Collections.Generic.IEnumerable{Cvte.Escort.DI.IContractInfo},System.Boolean)">
+            <summary>
+            使用收集到的 <see cref="T:Cvte.Escort.DI.IContractInfo"/> 集合创建 <see cref="T:Cvte.Escort.DI.CompositionHost"/> 的新实例。
+            </summary>
+            <param name="diContracts">收集到的所有依赖信息集合。</param>
+            <param name="sharingInstances">指示容器中是否共享同一个实例。</param>
+        </member>
+        <member name="M:Cvte.Escort.DI.CompositionHost.Append(System.Collections.Generic.IEnumerable{Cvte.Escort.DI.IContractInfo})">
+            <summary>
+            额外添加收集到的 <see cref="T:Cvte.Escort.DI.IContractInfo"/> 集合。
+            </summary>
+            <param name="diContracts">收集到的所有依赖信息集合。</param>
+        </member>
+        <member name="M:Cvte.Escort.DI.CompositionHost.Cvte#Escort#DI#IContainer#Import``1">
+            <inheritdoc />
+            <summary>
+            为依赖收集者提供依赖注入的方法。
+            </summary>
+            <typeparam name="TExport">需要注入到目标对象的类型。</typeparam>
+            <returns>可以注入到目标属性或参数的实例。</returns>
+        </member>
+        <member name="M:Cvte.Escort.DI.CompositionHost.GetExport``1">
+            <summary>
+            获取导出的 <typeparamref name="TExport"/> 类型的实例。
+            </summary>
+            <typeparam name="TExport">导出的契约类型，真实类型是其子类或接口的实现。</typeparam>
+            <returns><typeparamref name="TExport"/> 类型的实例。</returns>
+        </member>
+        <member name="M:Cvte.Escort.DI.CompositionHost.GetExport(System.Type)">
+            <summary>
+            获取契约类型为 <paramref name="contractType"/> 类型的实例，契约类型和实际类型之间不一定存在继承关系。
+            </summary>
+            <param name="contractType">契约类型。</param>
+            <returns>标记了指定契约的类型的实例。</returns>
+        </member>
+        <member name="M:Cvte.Escort.DI.CompositionHost.SatisfyImports(System.Object,Cvte.Escort.DI.CompositionHost)">
+            <summary>
+            将 <paramref name="exportSource"/> 中导出的实例注入到 <paramref name="instance"/> 实例中。
+            如果 <paramref name="exportSource"/> 实例为 null，则将此 <see cref="T:Cvte.Escort.DI.CompositionHost"/> 中导出的实例进行注入。
+            </summary>
+            <param name="instance">需要进行依赖注入的对象。</param>
+            <param name="exportSource">导出契约类型的容器。</param>
+        </member>
+        <member name="M:Cvte.Escort.DI.CompositionHost.FindPublicTypes(System.Object)">
+            <summary>
+            寻找 <paramref name="object"/> 的实际类型所有可能成为契约类型的类型对象。
+            </summary>
+            <param name="object">用于寻找契约类型的实例。</param>
+            <returns>可能的契约类型的枚举器。</returns>
+        </member>
+        <member name="T:Cvte.Escort.DI.ConnectDIInfo`2">
+            <inheritdoc />
+            <summary>
+            从 <see cref="T:Cvte.Escort.ViewModelConnectAttribute" /> 收集到的类型，包含连接的契约类型。
+            </summary>
+            <typeparam name="TConnect">连接的契约类型。</typeparam>
+            <typeparam name="TReal">实际类型。</typeparam>
+        </member>
+        <member name="M:Cvte.Escort.DI.ConnectDIInfo`2.#ctor(System.Func{`1},System.Action{`1,Cvte.Escort.DI.IContainer})">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.DI.ConnectDIInfo`2"/> 类型的新实例。
+            </summary>
+            <param name="create">创建 <typeparamref name="TReal"/> 类型新实例的方法。</param>
+            <param name="satisfy">将依赖注入到 <typeparamref name="TReal"/> 对象的实例的方法。</param>
+        </member>
+        <member name="F:Cvte.Escort.DI.ConnectDIInfo`2._create">
+            <summary>
+            创建 <typeparamref name="TReal"/> 类型新实例的方法。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.DI.ConnectDIInfo`2._satisfy">
+            <summary>
+            将依赖注入到 <typeparamref name="TReal"/> 对象的实例的方法。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.DI.ConnectDIInfo`2.Cvte#Escort#DI#IContractInfo#ContractType">
+            <inheritdoc />
+        </member>
+        <member name="P:Cvte.Escort.DI.ConnectDIInfo`2.Cvte#Escort#DI#IContractInfo#RealType">
+            <inheritdoc />
+        </member>
+        <member name="M:Cvte.Escort.DI.ConnectDIInfo`2.Cvte#Escort#DI#IContractInfo#Create">
+            <inheritdoc />
+        </member>
+        <member name="M:Cvte.Escort.DI.ConnectDIInfo`2.Cvte#Escort#DI#IContractInfo#Satisfy(System.Object,Cvte.Escort.DI.IContainer)">
+            <inheritdoc />
+        </member>
+        <member name="T:Cvte.Escort.DI.ExportInterfaceDIInfo`2">
+            <inheritdoc />
+            <summary>
+            从实现某契约接口的类型中收集到的类型。
+            </summary>
+            <typeparam name="TExport">用于导出的契约类型。</typeparam>
+            <typeparam name="TReal">实际类型。</typeparam>
+        </member>
+        <member name="M:Cvte.Escort.DI.ExportInterfaceDIInfo`2.#ctor(System.Action{`0,Cvte.Escort.DI.IContainer})">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.DI.ExportInterfaceDIInfo`2"/> 类型的新实例。
+            </summary>
+            <param name="satisfy">将依赖注入到 <typeparamref name="TReal"/> 对象的实例的方法。</param>
+        </member>
+        <member name="F:Cvte.Escort.DI.ExportInterfaceDIInfo`2._satisfy">
+            <summary>
+            将依赖注入到 <typeparamref name="TReal"/> 对象的实例的方法。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.DI.ExportInterfaceDIInfo`2.Cvte#Escort#DI#IContractInfo#ContractType">
+            <inheritdoc />
+        </member>
+        <member name="P:Cvte.Escort.DI.ExportInterfaceDIInfo`2.Cvte#Escort#DI#IContractInfo#RealType">
+            <inheritdoc />
+        </member>
+        <member name="M:Cvte.Escort.DI.ExportInterfaceDIInfo`2.Cvte#Escort#DI#IContractInfo#Create">
+            <inheritdoc />
+        </member>
+        <member name="M:Cvte.Escort.DI.ExportInterfaceDIInfo`2.Cvte#Escort#DI#IContractInfo#Satisfy(System.Object,Cvte.Escort.DI.IContainer)">
+            <inheritdoc />
+        </member>
+        <member name="T:Cvte.Escort.DI.IContainer">
+            <summary>
+            表示 <see cref="N:Cvte.Escort"/> 内置的简易依赖注入容器，
+            在使用 <see cref="T:Cvte.Escort.ViewModelProvider"/> 时可在参数中获得此容器的实例。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.DI.IContainer.Import``1">
+            <summary>
+            从 <see cref="T:Cvte.Escort.ViewModelProvider"/> 中获取一个此上下文中允许被注入的对象。
+            </summary>
+            <typeparam name="TContract">需要注入的实例的契约类型。（导出和注入之间使用契约类型进行匹配。）</typeparam>
+            <returns>注入的契约类型的实例。</returns>
+        </member>
+        <member name="T:Cvte.Escort.DI.IContractInfo">
+            <summary>
+            当初始化 <see cref="T:Cvte.Escort.ViewModelProvider"/> 时，使用此接口的集合声明可以匹配的 View 和 ViewModel。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.DI.IContractInfo.ContractType">
+            <summary>
+            获取契约类型。
+            作为导出类，通常这是导出类实现的业务接口；作为连接类，通常这是连接类使用 <see cref="T:System.Attribute"/> 标记的接口。
+            （连接代表，此类型可能与导出类发生某些交互行为。）
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.DI.IContractInfo.RealType">
+            <summary>
+            获取实际类型。
+            <see cref="T:Cvte.Escort.ViewModelProvider"/> 需要知道导出类和连接类的实际类型，以便能够直接构造此类型的新实例。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.DI.IContractInfo.Create">
+            <summary>
+            创建 <see cref="P:Cvte.Escort.DI.IContractInfo.RealType"/> 类型的新实例。
+            </summary>
+            <returns><see cref="P:Cvte.Escort.DI.IContractInfo.RealType"/> 类型的新实例。</returns>
+        </member>
+        <member name="M:Cvte.Escort.DI.IContractInfo.Satisfy(System.Object,Cvte.Escort.DI.IContainer)">
+            <summary>
+            从 <paramref name="di"/> 中取出导出的类型，并注入到 <paramref name="instance"/> 实例中。
+            </summary>
+            <param name="instance"><see cref="P:Cvte.Escort.DI.IContractInfo.RealType"/> 类型的实例。</param>
+            <param name="di">用于获取导出类型的依赖注入容器。</param>
+        </member>
+        <member name="T:Cvte.Escort.DI.ImportOnlyDIInfo`1">
+            <inheritdoc />
+            <summary>
+            收集到的仅需要注入实例，而没有任何对外契约的类型。
+            </summary>
+            <typeparam name="TReal">实际类型。</typeparam>
+        </member>
+        <member name="M:Cvte.Escort.DI.ImportOnlyDIInfo`1.#ctor(System.Action{`0,Cvte.Escort.DI.IContainer})">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.DI.ImportOnlyDIInfo`1"/> 的新实例。
+            </summary>
+            <param name="satisfy">将依赖注入到 <typeparamref name="TReal"/> 对象的实例的方法。</param>
+        </member>
+        <member name="F:Cvte.Escort.DI.ImportOnlyDIInfo`1._satisfy">
+            <summary>
+            将依赖注入到 <typeparamref name="TReal"/> 对象的实例的方法。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.DI.ImportOnlyDIInfo`1.Cvte#Escort#DI#IContractInfo#ContractType">
+            <inheritdoc />
+        </member>
+        <member name="P:Cvte.Escort.DI.ImportOnlyDIInfo`1.Cvte#Escort#DI#IContractInfo#RealType">
+            <inheritdoc />
+        </member>
+        <member name="M:Cvte.Escort.DI.ImportOnlyDIInfo`1.Cvte#Escort#DI#IContractInfo#Create">
+            <inheritdoc />
+        </member>
+        <member name="M:Cvte.Escort.DI.ImportOnlyDIInfo`1.Cvte#Escort#DI#IContractInfo#Satisfy(System.Object,Cvte.Escort.DI.IContainer)">
+            <inheritdoc />
+        </member>
+        <member name="T:Cvte.Escort.DI.ViewDI`1">
+            <summary>
+            为 <see cref="T:Cvte.Escort.ViewModelConnectAttribute"/> 标记的类型提供连接信息的收集。
+            </summary>
+            <typeparam name="TConnect">连接的契约类型。</typeparam>
+        </member>
+        <member name="M:Cvte.Escort.DI.ViewDI`1.Create``1(System.Action{``0,Cvte.Escort.DI.IContainer})">
+            <summary>
+            收集 View 的类型信息，便于 ViewModel 操作此 View。
+            </summary>
+            <typeparam name="TReal">View 的实际类型。</typeparam>
+            <param name="satisfy">将依赖注入到 <typeparamref name="TReal"/> 对象的实例的方法。</param>
+            <returns>收集到的一条可供 <see cref="T:Cvte.Escort.ViewModelProvider"/> 使用的 View/ViewModel 依赖信息。</returns>
+        </member>
+        <member name="T:Cvte.Escort.DI.ViewDI">
+            <summary>
+            为普通的 View 提供收集依赖注入信息的方法。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.DI.ViewDI.Create``1(System.Action{``0,Cvte.Escort.DI.IContainer})">
+            <summary>
+            收集 View 的类型信息，便于对此 View 中的部分属性进行依赖注入。
+            </summary>
+            <typeparam name="TReal">View 的实际类型。</typeparam>
+            <param name="satisfy">将依赖注入到 <typeparamref name="TReal"/> 对象的实例的方法。</param>
+            <returns>收集到的一条可供 <see cref="T:Cvte.Escort.ViewModelProvider"/> 使用的 View/ViewModel 依赖信息。</returns>
+        </member>
+        <member name="T:Cvte.Escort.DI.ViewModelDI`1">
+            <summary>
+            为 <see cref="T:Cvte.Escort.ViewModelExportAttribute"/> 标记的类型提供 ViewModel 导出信息的收集。
+            </summary>
+            <typeparam name="TExport">导出的契约类型，通常是 ViewModel 实现的业务接口。</typeparam>
+        </member>
+        <member name="M:Cvte.Escort.DI.ViewModelDI`1.Create``1(System.Action{``0,Cvte.Escort.DI.IContainer})">
+            <summary>
+            收集 ViewModel 的类型信息，便于 ViewModel 与 View 之间进行交互。
+            </summary>
+            <typeparam name="TReal">ViewModel 的实际类型。</typeparam>
+            <param name="satisfy">将依赖注入到 <typeparamref name="TReal"/> 对象的实例的方法。</param>
+            <returns>收集到的一条可供 <see cref="T:Cvte.Escort.ViewModelProvider"/> 使用的 View/ViewModel 依赖信息。</returns>
+        </member>
+        <member name="T:Cvte.Escort.ReentrancyPolicy">
+            <summary>
+            <para>表示异步任务执行时的重新进入策略。</para>
+            <remarks>
+            有关重新进入的详细信息，请参阅：[Handling Reentrancy in Async Apps (C#) - Microsoft Docs](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/handling-reentrancy-in-async-apps)
+            </remarks>
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ReentrancyPolicy.Disable">
+            <summary>
+            <para>当一次异步任务开始时，会禁用此异步任务的后续执行，直到此次任务执行完毕。</para>
+            <remarks>
+            这是默认值。
+            </remarks>
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ReentrancyPolicy.RunImmediately">
+            <summary>
+            每当异步任务需要执行，无论当前是否已经开始，都会立即开始执行一个新的任务。
+            <remarks>
+            一般不建议采用此默认值，除非明确知道并发可能产生的副作用。
+            </remarks>
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ReentrancyPolicy.Queue">
+            <summary>
+            <para>每个新的异步任务都会加入到任务执行队列并排队依次执行。</para>
+            <remarks>
+            如果每次执行都会产生不一样的状态，则推荐使用此策略。例如增加数据。
+            </remarks>
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ReentrancyPolicy.KeepLast">
+            <summary>
+            <para>
+            当新的异步任务开始执行时，如果当前有一个正在执行的异步任务，则会记录任务再次执行；
+            但无论重新开始多少次，都只会在当前任务结束后执行一次。
+            </para>
+            <remarks>
+            如果状态相同时执行任务的结果也相同，则推荐使用此策略。例如保存文件，只要能够保存新的文件即可，旧的版本不需要保存。
+            </remarks>
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.ReentrancyStateMachine">
+            <summary>
+            表示一个异步任务状态机，用于在不同的重新进入策略下决定何时执行指定任务。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ReentrancyStateMachine.AsyncAction">
+            <summary>
+            在派生类中调用此委托以真实地执行异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ReentrancyStateMachine.Invoke(System.Object)">
+            <summary>
+            尝试执行进行一次异步任务，但真实的是否执行的逻辑和执行实际将由派生类实现的重新进入策略决定。
+            </summary>
+            <param name="parameter">异步任务中传入的参数。</param>
+            <returns></returns>
+        </member>
+        <member name="M:Cvte.Escort.ReentrancyStateMachine.Cancel">
+            <summary>
+            如果异步任务正在执行，则尝试取消；否则不做任何事情。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ReentrancyStateMachine.FromPolicy(System.Func{System.Object,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            使用简单工厂方法创建一个用于执行 <paramref name="asyncAction"/> 异步任务的重新进入状态机。
+            </summary>
+            <param name="asyncAction">要被异步重新进入状态机调用的具体异步任务。</param>
+            <param name="reentrancyPolicy">重新进入策略。</param>
+        </member>
+        <member name="F:Cvte.Escort.QueueReentrancyStateMachine._runningTask">
+            <summary>
+            获取此时此刻正在执行的异步任务的 <see cref="T:System.Threading.Tasks.Task"/>。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.QueueReentrancyStateMachine.Invoke(System.Object)">
+            <summary>
+            如果当前没有任务在执行，则立即执行异步任务，并返回可等待此异步任务完成的 <see cref="T:System.Threading.Tasks.Task"/>。
+            如果当前已有异步任务执行中，则将新的异步任务放入此前任务结束后执行的计划当中，并在返回可等待计划中的新异步任务完成的 <see cref="T:System.Threading.Tasks.Task"/>。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.KeepLastReentrancyStateMachine.Invoke(System.Object)">
+            <summary>
+            若当前没有任务，则立刻执行，否则将最后一个任务置为下一个任务
+            </summary>
+            <param name="parameter"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Cvte.Escort.KeepLastReentrancyStateMachine.ExecuteCoreAsync">
+            实际执行方式
+        </member>
+        <member name="T:Cvte.Escort.ViewModelConnectAttribute">
+            <summary>
+            在 View 的类型上指定此特性可以让 ViewModel 发现此 View，以便在 View 还未创建时创建并控制此 View。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ViewModelConnectAttribute.ContractType">
+            <summary>
+            获取连接到 ViewModel 的契约类型。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelConnectAttribute.#ctor(System.Type)">
+            <summary>
+            在 View 的类型上指定此特性可以让 ViewModel 发现此 View，以便在 View 还未创建时创建并控制此 View。
+            </summary>
+            <param name="contractType">ViewModel 的契约类型。即 XAML 中用于查找 ViewModel 实例时采用的类型。</param>
+        </member>
+        <member name="T:Cvte.Escort.ViewModelExportAttribute">
+            <summary>
+            在 ViewModel 上指定此特性以便声明这是一个可与 View 关联的 ViewModel。
+            被 View 隐式关联后的 ViewModel 可以有限地控制 View；否则将无法在直接控制。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelExportAttribute.#ctor">
+            <summary>
+            在 ViewModel 上指定此特性以便声明这是一个可与 View 关联的 ViewModel。
+            被 View 隐式关联后的 ViewModel 可以有限地控制 View；否则将无法在直接控制。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.ViewModelImportAttribute">
+            <summary>
+            在允许访问 ViewModel 的类型中，在字段、属性、方法参数上指定此特性可以获得依赖的一个 ViewModel 的实例。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelImportAttribute.#ctor">
+            <summary>
+            在允许访问 ViewModel 的类型中，在字段、属性、方法参数上指定此特性可以获得依赖的一个 ViewModel 的实例。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.IMessageReceiver`1">
+            <summary>
+            表示 <see cref="T:Cvte.Escort.IMessage"/> 通信实体的接收者。
+            </summary>
+            <typeparam name="TMessage">具体可接收的消息类型。</typeparam>
+        </member>
+        <member name="M:Cvte.Escort.IMessageReceiver`1.OnMessageReceived(`0)">
+            <summary>
+            当接收到消息时将执行此方法以处理收到的信息。
+            </summary>
+            <param name="message">收到的消息。</param>
+        </member>
+        <member name="T:Cvte.Escort.IMessage">
+            <summary>
+            表示 ViewModel 和 View 之间通信的信息实体。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.CanBeNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could be <c>null</c> sometimes,
+            so the check for <c>null</c> is necessary before its usage.
+            </summary>
+            <example><code>
+            [CanBeNull] object Test() => null;
+            
+            void UseTest() {
+              var p = Test();
+              var s = p.ToString(); // Warning: Possible 'System.NullReferenceException'
+            }
+            </code></example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.NotNullAttribute">
+            <summary>
+            Indicates that the value of the marked element could never be <c>null</c>.
+            </summary>
+            <example><code>
+            [NotNull] object Foo() {
+              return null; // Warning: Possible 'null' assignment
+            }
+            </code></example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.ItemNotNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can never be null.
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.ItemCanBeNullAttribute">
+            <summary>
+            Can be appplied to symbols of types derived from IEnumerable as well as to symbols of Task
+            and Lazy classes to indicate that the value of a collection item, of the Task.Result property
+            or of the Lazy.Value property can be null.
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.StringFormatMethodAttribute">
+            <summary>
+            Indicates that the marked method builds string by format pattern and (optional) arguments.
+            Parameter, which contains format string, should be given in constructor. The format string
+            should be in <see cref="M:System.String.Format(System.IFormatProvider,System.String,System.Object[])"/>-like form.
+            </summary>
+            <example><code>
+            [StringFormatMethod("message")]
+            void ShowError(string message, params object[] args) { /* do something */ }
+            
+            void Foo() {
+              ShowError("Failed: {0}"); // Warning: Non-existing argument in format string
+            }
+            </code></example>
+        </member>
+        <member name="M:Cvte.Escort.Annotations.StringFormatMethodAttribute.#ctor(System.String)">
+            <param name="formatParameterName">
+            Specifies which parameter of an annotated method should be treated as format-string
+            </param>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.ValueProviderAttribute">
+            <summary>
+            For a parameter that is expected to be one of the limited set of values.
+            Specify fields of which type should be used as values for this parameter.
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.InvokerParameterNameAttribute">
+            <summary>
+            Indicates that the function argument should be string literal and match one
+            of the parameters of the caller function. For example, ReSharper annotates
+            the parameter of <see cref="T:System.ArgumentNullException"/>.
+            </summary>
+            <example><code>
+            void Foo(string param) {
+              if (param == null)
+                throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
+            }
+            </code></example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.NotifyPropertyChangedInvocatorAttribute">
+             <summary>
+             Indicates that the method is contained in a type that implements
+             <c>System.ComponentModel.INotifyPropertyChanged</c> interface and this method
+             is used to notify that some property value changed.
+             </summary>
+             <remarks>
+             The method should be non-static and conform to one of the supported signatures:
+             <list>
+             <item><c>NotifyChanged(string)</c></item>
+             <item><c>NotifyChanged(params string[])</c></item>
+             <item><c>NotifyChanged{T}(Expression{Func{T}})</c></item>
+             <item><c>NotifyChanged{T,U}(Expression{Func{T,U}})</c></item>
+             <item><c>SetProperty{T}(ref T, T, string)</c></item>
+             </list>
+             </remarks>
+             <example><code>
+             public class Foo : INotifyPropertyChanged {
+               public event PropertyChangedEventHandler PropertyChanged;
+             
+               [NotifyPropertyChangedInvocator]
+               protected virtual void NotifyChanged(string propertyName) { ... }
+            
+               string _name;
+             
+               public string Name {
+                 get { return _name; }
+                 set { _name = value; NotifyChanged("LastName"); /* Warning */ }
+               }
+             }
+             </code>
+             Examples of generated notifications:
+             <list>
+             <item><c>NotifyChanged("Property")</c></item>
+             <item><c>NotifyChanged(() =&gt; Property)</c></item>
+             <item><c>NotifyChanged((VM x) =&gt; x.Property)</c></item>
+             <item><c>SetProperty(ref myField, value, "Property")</c></item>
+             </list>
+             </example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.ContractAnnotationAttribute">
+            <summary>
+            Describes dependency between method input and output.
+            </summary>
+            <syntax>
+            <p>Function Definition Table syntax:</p>
+            <list>
+            <item>FDT      ::= FDTRow [;FDTRow]*</item>
+            <item>FDTRow   ::= Input =&gt; Output | Output &lt;= Input</item>
+            <item>Input    ::= ParameterName: Value [, Input]*</item>
+            <item>Output   ::= [ParameterName: Value]* {halt|stop|void|nothing|Value}</item>
+            <item>Value    ::= true | false | null | notnull | canbenull</item>
+            </list>
+            If method has single input parameter, it's name could be omitted.<br/>
+            Using <c>halt</c> (or <c>void</c>/<c>nothing</c>, which is the same) for method output
+            means that the methos doesn't return normally (throws or terminates the process).<br/>
+            Value <c>canbenull</c> is only applicable for output parameters.<br/>
+            You can use multiple <c>[ContractAnnotation]</c> for each FDT row, or use single attribute
+            with rows separated by semicolon. There is no notion of order rows, all rows are checked
+            for applicability and applied per each program state tracked by R# analysis.<br/>
+            </syntax>
+            <examples><list>
+            <item><code>
+            [ContractAnnotation("=&gt; halt")]
+            public void TerminationMethod()
+            </code></item>
+            <item><code>
+            [ContractAnnotation("halt &lt;= condition: false")]
+            public void Assert(bool condition, string text) // regular assertion method
+            </code></item>
+            <item><code>
+            [ContractAnnotation("s:null =&gt; true")]
+            public bool IsNullOrEmpty(string s) // string.IsNullOrEmpty()
+            </code></item>
+            <item><code>
+            // A method that returns null if the parameter is null,
+            // and not null if the parameter is not null
+            [ContractAnnotation("null =&gt; null; notnull =&gt; notnull")]
+            public object Transform(object data) 
+            </code></item>
+            <item><code>
+            [ContractAnnotation("=&gt; true, result: notnull; =&gt; false, result: null")]
+            public bool TryParse(string s, out Person result)
+            </code></item>
+            </list></examples>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.LocalizationRequiredAttribute">
+            <summary>
+            Indicates that marked element should be localized or not.
+            </summary>
+            <example><code>
+            [LocalizationRequiredAttribute(true)]
+            class Foo {
+              string str = "my string"; // Warning: Localizable string
+            }
+            </code></example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.CannotApplyEqualityOperatorAttribute">
+            <summary>
+            Indicates that the value of the marked type (or its derivatives)
+            cannot be compared using '==' or '!=' operators and <c>Equals()</c>
+            should be used instead. However, using '==' or '!=' for comparison
+            with <c>null</c> is always permitted.
+            </summary>
+            <example><code>
+            [CannotApplyEqualityOperator]
+            class NoEquality { }
+            
+            class UsesNoEquality {
+              void Test() {
+                var ca1 = new NoEquality();
+                var ca2 = new NoEquality();
+                if (ca1 != null) { // OK
+                  bool condition = ca1 == ca2; // Warning
+                }
+              }
+            }
+            </code></example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.BaseTypeRequiredAttribute">
+            <summary>
+            When applied to a target attribute, specifies a requirement for any type marked
+            with the target attribute to implement or inherit specific type or types.
+            </summary>
+            <example><code>
+            [BaseTypeRequired(typeof(IComponent)] // Specify requirement
+            class ComponentAttribute : Attribute { }
+            
+            [Component] // ComponentAttribute requires implementing IComponent interface
+            class MyComponent : IComponent { }
+            </code></example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.UsedImplicitlyAttribute">
+            <summary>
+            Indicates that the marked symbol is used implicitly (e.g. via reflection, in external library),
+            so this symbol will not be marked as unused (as well as by other usage inspections).
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.MeansImplicitUseAttribute">
+            <summary>
+            Should be used on attributes and causes ReSharper to not mark symbols marked with such attributes
+            as unused (as well as by other usage inspections)
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.Annotations.ImplicitUseKindFlags.Access">
+            <summary>Only entity marked with attribute considered used.</summary>
+        </member>
+        <member name="F:Cvte.Escort.Annotations.ImplicitUseKindFlags.Assign">
+            <summary>Indicates implicit assignment to a member.</summary>
+        </member>
+        <member name="F:Cvte.Escort.Annotations.ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature">
+            <summary>
+            Indicates implicit instantiation of a type with fixed constructor signature.
+            That means any unused constructor parameters won't be reported as such.
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.Annotations.ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature">
+            <summary>Indicates implicit instantiation of a type.</summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.ImplicitUseTargetFlags">
+            <summary>
+            Specify what is considered used implicitly when marked
+            with <see cref="T:Cvte.Escort.Annotations.MeansImplicitUseAttribute"/> or <see cref="T:Cvte.Escort.Annotations.UsedImplicitlyAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.Annotations.ImplicitUseTargetFlags.Members">
+            <summary>Members of entity marked with attribute are considered used.</summary>
+        </member>
+        <member name="F:Cvte.Escort.Annotations.ImplicitUseTargetFlags.WithMembers">
+            <summary>Entity marked with attribute and all its members considered used.</summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.PublicAPIAttribute">
+            <summary>
+            This attribute is intended to mark publicly available API
+            which should not be removed and so is treated as used.
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.InstantHandleAttribute">
+            <summary>
+            Tells code analysis engine if the parameter is completely handled when the invoked method is on stack.
+            If the parameter is a delegate, indicates that delegate is executed while the method is executed.
+            If the parameter is an enumerable, indicates that it is enumerated while the method is executed.
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.PureAttribute">
+            <summary>
+            Indicates that a method does not make any observable state changes.
+            The same as <c>System.Diagnostics.Contracts.PureAttribute</c>.
+            </summary>
+            <example><code>
+            [Pure] int Multiply(int x, int y) => x * y;
+            
+            void M() {
+              Multiply(123, 42); // Waring: Return value of pure method is not used
+            }
+            </code></example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.MustUseReturnValueAttribute">
+            <summary>
+            Indicates that the return value of method invocation must be used.
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.ProvidesContextAttribute">
+            <summary>
+            Indicates the type member or parameter of some type, that should be used instead of all other ways
+            to get the value that type. This annotation is useful when you have some "context" value evaluated
+            and stored somewhere, meaning that all other ways to get this value must be consolidated with existing one.
+            </summary>
+            <example><code>
+            class Foo {
+              [ProvidesContext] IBarService _barService = ...;
+            
+              void ProcessNode(INode node) {
+                DoSomething(node, node.GetGlobalServices().Bar);
+                //              ^ Warning: use value of '_barService' field
+              }
+            }
+            </code></example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.PathReferenceAttribute">
+            <summary>
+            Indicates that a parameter is a path to a file or a folder within a web project.
+            Path can be relative or absolute, starting from web root (~).
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.SourceTemplateAttribute">
+            <summary>
+            An extension method marked with this attribute is processed by ReSharper code completion
+            as a 'Source Template'. When extension method is completed over some expression, it's source code
+            is automatically expanded like a template at call site.
+            </summary>
+            <remarks>
+            Template method body can contain valid source code and/or special comments starting with '$'.
+            Text inside these comments is added as source code when the template is applied. Template parameters
+            can be used either as additional method parameters or as identifiers wrapped in two '$' signs.
+            Use the <see cref="T:Cvte.Escort.Annotations.MacroAttribute"/> attribute to specify macros for parameters.
+            </remarks>
+            <example>
+            In this example, the 'forEach' method is a source template available over all values
+            of enumerable types, producing ordinary C# 'foreach' statement and placing caret inside block:
+            <code>
+            [SourceTemplate]
+            public static void forEach&lt;T&gt;(this IEnumerable&lt;T&gt; xs) {
+              foreach (var x in xs) {
+                 //$ $END$
+              }
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:Cvte.Escort.Annotations.MacroAttribute">
+            <summary>
+            Allows specifying a macro for a parameter of a <see cref="T:Cvte.Escort.Annotations.SourceTemplateAttribute">source template</see>.
+            </summary>
+            <remarks>
+            You can apply the attribute on the whole method or on any of its additional parameters. The macro expression
+            is defined in the <see cref="P:Cvte.Escort.Annotations.MacroAttribute.Expression"/> property. When applied on a method, the target
+            template parameter is defined in the <see cref="P:Cvte.Escort.Annotations.MacroAttribute.Target"/> property. To apply the macro silently
+            for the parameter, set the <see cref="P:Cvte.Escort.Annotations.MacroAttribute.Editable"/> property value = -1.
+            </remarks>
+            <example>
+            Applying the attribute on a source template method:
+            <code>
+            [SourceTemplate, Macro(Target = "item", Expression = "suggestVariableName()")]
+            public static void forEach&lt;T&gt;(this IEnumerable&lt;T&gt; collection) {
+              foreach (var item in collection) {
+                //$ $END$
+              }
+            }
+            </code>
+            Applying the attribute on a template method parameter:
+            <code>
+            [SourceTemplate]
+            public static void something(this Entity x, [Macro(Expression = "guid()", Editable = -1)] string newguid) {
+              /*$ var $x$Id = "$newguid$" + x.ToString();
+              x.DoSomething($x$Id); */
+            }
+            </code>
+            </example>
+        </member>
+        <member name="P:Cvte.Escort.Annotations.MacroAttribute.Expression">
+            <summary>
+            Allows specifying a macro that will be executed for a <see cref="T:Cvte.Escort.Annotations.SourceTemplateAttribute">source template</see>
+            parameter when the template is expanded.
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.Annotations.MacroAttribute.Editable">
+            <summary>
+            Allows specifying which occurrence of the target parameter becomes editable when the template is deployed.
+            </summary>
+            <remarks>
+            If the target parameter is used several times in the template, only one occurrence becomes editable;
+            other occurrences are changed synchronously. To specify the zero-based index of the editable occurrence,
+            use values >= 0. To make the parameter non-editable when the template is expanded, use -1.
+            </remarks>>
+        </member>
+        <member name="P:Cvte.Escort.Annotations.MacroAttribute.Target">
+            <summary>
+            Identifies the target parameter of a <see cref="T:Cvte.Escort.Annotations.SourceTemplateAttribute">source template</see> if the
+            <see cref="T:Cvte.Escort.Annotations.MacroAttribute"/> is applied on a template method.
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.IClosableView">
+            <summary>
+            当在 View 中实现时，如果有 ViewModel 申请关闭 View，则会调用此接口的实现。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IClosableView.CloseView">
+            <summary>
+            当 ViewModel 发起了关闭 View 的指令后，如果此 View 符合关闭要求，将会找到此 View 并将其关闭。
+            关闭可能指的是设置可见性为“隐藏”。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.IManageView`1">
+            <summary>
+            表示一个 View 将接管 <see cref="T:Cvte.Escort.IViewModelProvider"/> 对某种 ViewModel 所关联的 View 显示过程的自动控制。
+            </summary>
+            <typeparam name="TViewModel"></typeparam>
+        </member>
+        <member name="M:Cvte.Escort.IManageView`1.ShowView(`0)">
+            <summary>
+            显示一个 ViewModel 所关联的 View。
+            </summary>
+            <param name="viewModel">ViewModel 的实例。</param>
+        </member>
+        <member name="T:Cvte.Escort.IPage">
+            <summary>
+            表示一个 UI 控件的行为像页面一样可被导航。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IPage.OnNavigatedFrom(Cvte.Escort.NavigationEventArgs)">
+            <summary>
+            Invoked immediately after the Page is unloaded and is no longer the current source of a parent Frame.
+            </summary>
+            <param name="e">
+            Event data that can be examined by overriding code. The event data is representative of the navigation that has unloaded the current Page.
+            </param>
+        </member>
+        <member name="M:Cvte.Escort.IPage.OnNavigatedTo(Cvte.Escort.NavigationEventArgs)">
+            <summary>
+            Invoked when the Page is loaded and becomes the current source of a parent Frame.
+            </summary>
+            <param name="e">
+            Event data that can be examined by overriding code. The event data is representative of the pending navigation that will load the current Page. Usually the most relevant property to examine is Parameter.
+            </param>
+        </member>
+        <member name="M:Cvte.Escort.IPage.OnNavigatingFrom(Cvte.Escort.NavigatingCancelEventArgs)">
+            <summary>
+            Invoked immediately before the Page is unloaded and is no longer the current source of a parent Frame.
+            </summary>
+            <param name="e">
+            Event data that can be examined by overriding code. The event data is representative of the navigation that will unload the current Page unless canceled. The navigation can potentially be canceled by setting Cancel.
+            </param>
+        </member>
+        <member name="T:Cvte.Escort.IPageTransitionAnimation">
+            <summary>
+            页面切换动画参数
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.IPageTransitionAnimation.InDirection">
+            <summary>
+            进入方向
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.IPageTransitionAnimation.OutDirection">
+            <summary>
+            离开方向
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.IPageTransitionAnimation.InOutMode">
+            <summary>
+            切页动画执行时机
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.PageTransitionDirection">
+            <summary>
+            切页动画方向
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.PageTransitionMode">
+            <summary>
+            切页动画执行时机
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.PageTransitionMode.OnlyIn">
+            <summary>
+            仅进入时执行动画
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.PageTransitionMode.OnlyOut">
+            <summary>
+            仅离开时执行动画
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.PageTransitionMode.BothInOut">
+            <summary>
+            进入和离开都执行动画
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.IShareInstance">
+            <summary>
+            一个 View/ViewModel 的额外附加信息。 
+            这是一个可选接口，如果需要View/ViewModel共享实例，则实现此接口
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.IViewAggregator">
+            <summary>
+            一个View聚合器，该聚合器可以同时将多个View添加到视觉树，以完成提前加载的目的
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IViewAggregator.Navigate(System.Type,System.Windows.UIElement)">
+            <summary>
+            导航到 <paramref name="viewType"/> 对应的View，隐藏其它View
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IViewAggregator.GoBack">
+            <summary>
+            返回上一个View
+            </summary>
+            <returns>成功执行返回True,如果上一个View不是该聚合器中的一个，则返回false</returns>
+        </member>
+        <member name="M:Cvte.Escort.IViewAggregator.Contain(System.Type)">
+            <summary>
+            获取聚合器是否包含 <paramref name="viewType"/> 对应的View
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Cvte.Escort.NavigationEventArgs">
+            <summary>
+            在页面导航时传递的参数。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.NavigationEventArgs.#ctor(System.Windows.UIElement,System.Windows.UIElement,System.Object)">
+            <summary>
+            创建包含基本导航信息的导航参数。
+            </summary>
+            <param name="source">导航的来源页。</param>
+            <param name="target">导航的目标页。</param>
+            <param name="parameter">导航中传递的参数，可以为 null。</param>
+        </member>
+        <member name="P:Cvte.Escort.NavigationEventArgs.Source">
+            <summary>
+            导航的来源页，null 表示没有来源页。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.NavigationEventArgs.Target">
+            <summary>
+            导航的目标页，null 表示没有目标页。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.NavigationEventArgs.Parameter">
+            <summary>
+            导航中传递的参数，null 表示传递参数。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.NavigatingCancelEventArgs">
+            <summary>
+            在页面导航时传递的参数，可通过此参数取消导航。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.NavigatingCancelEventArgs.#ctor(System.Windows.UIElement,System.Windows.UIElement,System.Object)">
+            <summary>
+            创建包含基本导航信息的导航参数，可通过此参数取消导航。
+            </summary>
+            <param name="source">导航的来源页。</param>
+            <param name="target">导航的目标页。</param>
+            <param name="parameter">导航中传递的参数，可以为 null。</param>
+        </member>
+        <member name="P:Cvte.Escort.NavigatingCancelEventArgs.IsCanceled">
+            <summary>
+            获取是否有任何导航过程取消了此次导航。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.NavigatingCancelEventArgs.Cancel">
+            <summary>
+            取消一次导航。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.NavigationEventArgsExtensions">
+            <summary>
+            包含导航参数的扩展方法。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.NavigationEventArgsExtensions.GetParameter``1(Cvte.Escort.NavigationEventArgs)">
+            <summary>
+            从导航参数中获取指定类型的参数。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ViewFrame.PreservedChildren">
+            <summary>
+            获取预加载的元素集合。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ViewFrame.Child">
+            <summary>
+            获取或设置当前正在显示的 View。 
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewFrame.Navigate(System.Windows.UIElement,System.Object)">
+            <summary>
+            导航到 View。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewFrame.GoBack">
+            <summary>
+            返回上一个显示的 View。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewFrameExtension.CheckInAnimation(Cvte.Escort.ViewFrame,System.Windows.UIElement)">
+            <summary>
+            检查 <paramref name="target"/> 是否有进入动画
+            </summary>
+            <param name="viewFrame"></param>
+            <param name="target">UI界面</param>
+            <returns>页面进入动画，无则返回空</returns>
+        </member>
+        <member name="M:Cvte.Escort.ViewFrameExtension.CheckOutAnimation(Cvte.Escort.ViewFrame,System.Windows.UIElement)">
+            <summary>
+            检查 <paramref name="target"/> 是否有退出动画
+            </summary>
+            <param name="viewFrame"></param>
+            <param name="target">UI界面</param>
+            <returns>页面退出动画，无则返回空</returns>
+        </member>
+        <member name="M:Cvte.Escort.ViewFrameExtension.TakeSnap(System.Windows.FrameworkElement)">
+            <summary>
+            对 <paramref name="element"/> 进行截图
+            </summary>
+            <param name="element"></param>
+            <returns>截图Image</returns>
+        </member>
+        <member name="T:Cvte.Escort.TransitionSlideInEffect">
+            <summary>
+            页面切换特效
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.TransitionSlideInEffect.#ctor">
+            <summary>
+            创建页面切换特效
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.TransitionSlideInEffect.Input">
+            <summary>
+            获取或设置第一页的Brush
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.TransitionSlideInEffect.Progress">
+            <summary>
+            获取或设置切页进度 取值0~1
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.TransitionSlideInEffect.SlideAmount">
+            <summary>
+            获取或设置切页动画方向
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.TransitionSlideInEffect.Texture2">
+            <summary>
+            获取或设置第二页的Brush
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.InstanceMethodBuilder`2">
+            <summary>
+            为类型的实例方法创建调用委托，如果方法可能被多次调用，则相比于反射调用的性能更高。
+            泛型参数的最后一个是方法的返回值类型，其他都是参数类型。 
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.InstanceMethodBuilder`2.CreateMethod``1(System.String)">
+            <summary>
+            创建用于调用 <typeparamref name="TInstanceType"/> 类型中名为 <paramref name="methodName"/> 方法的委托。
+            调用时形如：var result = func(this, t)。
+            </summary>
+            <typeparam name="TInstanceType">实例的类型。</typeparam>
+            <param name="methodName">要调用的方法名。</param>
+            <returns>用于调用指定实例中指定方法的委托。</returns>
+        </member>
+        <member name="M:Cvte.Escort.InstanceMethodBuilder`2.CreateMethod``1(System.Func{System.Reflection.MethodInfo,System.Boolean})">
+            <summary>
+            创建用于调用 <typeparamref name="TInstanceType"/> 类型中符合 <paramref name="methodPredicate"/> 要求的方法的委托。
+            调用时形如：var result = func(this, t)。
+            </summary>
+            <typeparam name="TInstanceType">实例的类型。</typeparam>
+            <param name="methodPredicate">要调用的方法需要满足的条件。</param>
+            <returns>用于调用指定实例中指定方法的委托。</returns>
+        </member>
+        <member name="M:Cvte.Escort.InstanceMethodBuilder`2.CreateMethod``1(System.Reflection.MethodInfo)">
+            <summary>
+            创建用于调用 <typeparamref name="TInstanceType"/> 类型中 <paramref name="method"/> 实例方法的委托。
+            调用时形如：var result = func(this, t)。
+            </summary>
+            <typeparam name="TInstanceType">实例的类型。</typeparam>
+            <param name="method">要调用的方法。</param>
+            <returns>用于调用指定实例中指定方法的委托。</returns>
+        </member>
+        <member name="M:Cvte.Escort.InstanceMethodBuilder`2.CreateInstanceMethod``1(``0,System.String)">
+            <summary>
+            创建用于调用 <paramref name="instance"/> 实例中名为 <paramref name="methodName"/> 方法的委托。
+            调用方法的实例已在委托生成期间确定。调用时形如：var result = func(t)。
+            </summary>
+            <typeparam name="TInstanceType">实例的类型。</typeparam>
+            <param name="instance">要调用的实例。</param>
+            <param name="methodName">要调用的方法名。</param>
+            <returns>用于调用指定实例中指定方法的委托。</returns>
+        </member>
+        <member name="M:Cvte.Escort.InstanceMethodBuilder`2.CreateInstanceMethod``1(``0,System.Func{System.Reflection.MethodInfo,System.Boolean})">
+            <summary>
+            创建用于调用 <paramref name="instance"/> 实例中符合 <paramref name="methodPredicate"/> 要求的方法的委托。
+            调用方法的实例已在委托生成期间确定。调用时形如：var result = func(t)。
+            </summary>
+            <typeparam name="TInstanceType">实例的类型。</typeparam>
+            <param name="instance">要调用的实例。</param>
+            <param name="methodPredicate">要调用的方法需要满足的条件。</param>
+            <returns>用于调用指定实例中指定方法的委托。</returns>
+        </member>
+        <member name="M:Cvte.Escort.InstanceMethodBuilder`2.CreateInstanceMethod``1(``0,System.Reflection.MethodInfo)">
+            <summary>
+            创建用于调用 <paramref name="instance"/> 实例中 <paramref name="method"/> 方法的委托。
+            调用方法的实例已在委托生成期间确定。调用时形如：var result = func(t)。
+            </summary>
+            <typeparam name="TInstanceType">实例的类型。</typeparam>
+            <param name="instance">要调用的实例。</param>
+            <param name="method">要调用的方法。</param>
+            <returns>用于调用指定实例中指定方法的委托。</returns>
+        </member>
+        <member name="T:Cvte.Escort.Utils.MarkupExtensionValidator">
+            <summary>
+            为 <see cref="T:System.Windows.Markup.MarkupExtension"/> 中以来对象和依赖属性的赋值过程提供通用的验证措施。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Utils.MarkupExtensionValidator.ValidateMarkupExtension(System.Windows.Markup.MarkupExtension,System.IServiceProvider,System.Windows.FrameworkElement@)">
+            <summary>
+            验证 <see cref="T:System.Windows.Markup.MarkupExtension"/> 中此时提供的服务是否正在向 <see cref="T:System.Windows.FrameworkElement"/> 的依赖属性赋值。
+            </summary>
+            <param name="extension">需要进行通用验证的 <see cref="T:System.Windows.Markup.MarkupExtension"/>。</param>
+            <param name="serviceProvider">在 <see cref="M:System.Windows.Markup.MarkupExtension.ProvideValue(System.IServiceProvider)"/> 方法中传入的参数。</param>
+            <param name="element">如果正在向 <see cref="T:System.Windows.FrameworkElement"/> 提供值，则返回此 <see cref="T:System.Windows.FrameworkElement"/> 实例。</param>
+            <returns>如果验证为此时可以赋值，则返回 true；如果因为设计时支持或者服务对象不存在，则返回 false。</returns>
+        </member>
+        <member name="T:Cvte.Escort.Utils.VisualTreeExtensions">
+            <summary>
+            包含可视化树的扩展方法。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Utils.VisualTreeExtensions.FindAncestorToExecute``2(System.Windows.Media.Visual,System.Action{``0},System.Action{``1})">
+            <summary>
+            从 <paramref name="source"/> 开始沿着父级寻找指定类型的元素，并在找到第一个匹配的类型时执行指定的方法。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.Utils.VisualTreeExtensions.FindAncestorToExecute``3(System.Windows.Media.Visual,System.Action{``0},System.Action{``1},System.Action{``2})">
+            <summary>
+            从 <paramref name="source"/> 开始沿着父级寻找指定类型的元素，并在找到第一个匹配的类型时执行指定的方法。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.WeakReferenceEnumerableExtensions">
+            <summary>
+            包含弱引用序列的扩展方法。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.WeakReferenceEnumerableExtensions.Where``2(System.Collections.Generic.ICollection{System.ValueTuple{System.WeakReference{``0},System.WeakReference{``1}}},System.Func{``0,``1,System.Boolean})">
+            <summary>
+            对弱引用二元元组进行遍历，并挑选符合条件的元素。每遍历发现一个已被垃圾回收的元组，就会将其从集合中删除。
+            </summary>
+            <typeparam name="T1">弱引用元组类型 1。</typeparam>
+            <typeparam name="T2">弱引用元组类型 2。</typeparam>
+            <param name="source">弱引用元组集合。注意，此遍历可能会修改此集合。</param>
+            <param name="predicate">挑选符合条件的元素的筛选条件。</param>
+            <returns>筛选出来的元素序列。</returns>
+        </member>
+        <member name="T:Cvte.Escort.BindableObject">
+            <summary>
+            表示可绑定的对象，在此类型的派生类中按约定定义的属性支持绑定。
+            </summary>
+        </member>
+        <member name="E:Cvte.Escort.BindableObject.PropertyChanged">
+            <summary>
+            当此实例中的任何一个具有更改通知的属性值改变时发生。
+            派生类可以通过调用 <see cref="M:Cvte.Escort.BindableObject.SetValue``1(``0@,``0,System.String)"/> 或 <see cref="M:Cvte.Escort.BindableObject.OnPropertyChanged(System.String)"/> 来引发此事件。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.BindableObject.OnPropertyChanged(System.String)">
+            <summary>
+            当具有更改通知的属性值改变时发生。
+            </summary>
+            <param name="propertyName">属性名称。不需要手动传入，会自动根据所在属性的方法名设置此参数值。</param>
+        </member>
+        <member name="M:Cvte.Escort.BindableObject.SetValue``1(``0@,``0,System.String)">
+            <summary>
+            修改一个具有更改通知的属性值，并对外报告值的改变。
+            </summary>
+            <typeparam name="T">值的类型。</typeparam>
+            <param name="field">要修改的字段引用。</param>
+            <param name="value">要修改的字段的新值。</param>
+            <param name="propertyName">属性名称。不需要手动传入，会自动根据所在属性的方法名设置此参数值。</param>
+            <returns>如果值发生了更改，则返回 true；否则返回 false。</returns>
+        </member>
+        <member name="M:Cvte.Escort.BindableObject.ThrowIfPropertyCanNotBeNull(System.String)">
+            <summary>
+            对于不允许为 null 的属性，调用此方法以便在设置为 null 的时候抛出异常。
+            </summary>
+            <param name="propertyName">属性名称。不需要手动传入，会自动根据所在属性的方法名设置此参数值。</param>
+        </member>
+        <member name="M:Cvte.Escort.BindableObject.UpdateCollection``1(System.Collections.ObjectModel.ObservableCollection{``0},System.Collections.Generic.ICollection{``0})">
+            <summary>
+            更新集合中的所有项，以便在不修改绑定实例的情况下通知 UI 更新所有项。
+            注意：此方法暂未进行性能优化，目前是全集合更新。
+            </summary>
+            <typeparam name="T">集合的单项类型。</typeparam>
+            <param name="source">要修改的字段引用。</param>
+            <param name="items">更新集合需要使用的新集合</param>
+        </member>
+        <member name="T:Cvte.Escort.FrameworkElementTracker">
+            <summary>
+            用于追踪<see cref="T:System.Windows.FrameworkElement"/>是否存在于视觉树中。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.FrameworkElementTracker.IsOnVisualTreeProperty">
+            <summary>
+            用于指示<see cref="T:System.Windows.FrameworkElement"/>是否存在于视觉树中。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.FrameworkElementTracker.Track(System.Windows.FrameworkElement)">
+            <summary>
+            创建追踪<paramref name="element"/>的Tracker。
+            </summary>
+            <param name="element">被追踪的<see cref="T:System.Windows.FrameworkElement"/></param>
+        </member>
+        <member name="M:Cvte.Escort.FrameworkElementTracker.Element_Loaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            元素加载之后，为其添加附件属性<see cref="F:Cvte.Escort.FrameworkElementTracker.IsOnVisualTreeProperty"/>，指示其在视觉树中。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.FrameworkElementTracker.Element_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            元素加载之后，将其<see cref="F:Cvte.Escort.FrameworkElementTracker.IsOnVisualTreeProperty"/>属性清除。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.FrameworkElementTracker.IsOnVisualTree(System.Windows.FrameworkElement)">
+            <summary>
+            获取一个值，该值表示<paramref name="element"/>是否存在于视觉树中。
+            （如果该元素没有被追踪过，则返回 false。）
+            </summary>
+            <returns>True:元素在视觉树中; False:元素没有在视觉树中或该元素没有被追踪过。</returns>
+        </member>
+        <member name="T:Cvte.Escort.InternalViewModelProviderExtensions">
+            <summary>
+            专为原生实现的 <see cref="T:Cvte.Escort.ViewModelProvider"/> 提供扩展方法。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.InternalViewModelProviderExtensions.ActiveOrLastOrDefaultFrameworkElement(System.Collections.Generic.IEnumerable{System.ValueTuple{System.Windows.FrameworkElement,System.Object}},Cvte.Escort.FrameworkElementTracker)">
+            <summary>
+            在过滤并解弱引用后的 <see cref="F:Cvte.Escort.ViewModelProvider._managedViewViewModelSets"/> 集合中查找活动的 <see cref="T:System.Windows.FrameworkElement"/>。
+            活动的是指当前正在显示的；如果找不到，则查找最后一个（意味着最近使用的）；如果仍找不到（说明一个也没创建或全被回收），则返回 null。
+            </summary>
+            <remarks>
+            适用于从此 View 发起操作，例如从此 View 导航，从此 View 关闭。通常，这意味着此 View 当前一定处于活动状态。
+            如果 View 是被操纵的目标，请不要使用此方法，因为被操作的 View 可能不存在，可能存在但被隐藏。
+            </remarks>
+        </member>
+        <member name="M:Cvte.Escort.InternalViewModelProviderExtensions.LastLoadedFrameworkElement(System.Collections.Generic.IEnumerable{System.ValueTuple{System.Windows.FrameworkElement,System.Object}},Cvte.Escort.FrameworkElementTracker)">
+            <summary>
+            在过滤并解弱引用后的 <see cref="F:Cvte.Escort.ViewModelProvider._managedViewViewModelSets"/> 集合中寻找当前处于 Loaded 状态的 <see cref="T:System.Windows.FrameworkElement"/>。
+            Loaded 是指当前已加入视觉树中，可见或不可见的。
+            </summary>
+            <remarks>
+            适用于被操作的 View，这个 View 可能此时并没有显示，而是即将显示或被交互。
+            如果窗口已关闭，<see cref="T:System.Windows.FrameworkElement"/> 会被移除视觉树，则 IsLoaded 为 false。
+            </remarks>
+        </member>
+        <member name="T:Cvte.Escort.IViewModel">
+            <summary>
+            标记一个类型作为 ViewModel 使用。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.IViewModelProvider">
+            <summary>
+            为 <see cref="T:Cvte.Escort.IViewModel"/> 提供 View 与 ViewModel 的管理。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IViewModelProvider.ShowViewFrom``1(Cvte.Escort.IViewModel)">
+            <summary>
+            从参数 <paramref name="viewModelSource"/> 指定的 ViewModel 中显示一个新的 ViewModel，
+            这个新 ViewModel 的类型是 <typeparamref name="TViewModel"/>。
+            </summary>
+            <typeparam name="TViewModel">要显示新 View 的 ViewModel。</typeparam>
+            <param name="viewModelSource">
+            如果需要显示新的 View，需要有一个用于承载此新 View 的载体 View；
+            此参数是此 View 对应的 ViewModel。
+            </param>
+        </member>
+        <member name="M:Cvte.Escort.IViewModelProvider.CloseViewFrom(Cvte.Escort.IViewModel)">
+            <summary>
+            关闭关联此 <paramref name="viewModelSource"/> 的 View。这将关闭窗口或者导航返回 Page。
+            </summary>
+            <param name="viewModelSource">要关闭的 View 对应的 ViewModel。</param>
+        </member>
+        <member name="M:Cvte.Escort.IViewModelProvider.Resolve``1(System.Windows.FrameworkElement)">
+            <summary>
+            获取或创建与 <paramref name="viewAsKey"/> 对应的指定类型的 ViewModel。
+            </summary>
+            <typeparam name="TViewModel">ViewModel 的类型。可以是接口。</typeparam>
+            <param name="viewAsKey">此 ViewModel 将关联的 View。</param>
+            <returns></returns>
+        </member>
+        <member name="M:Cvte.Escort.IViewModelProvider.GetViewModel``1">
+            <summary>
+            为了和 Cvte.Composition.Container 交接类型，需要能够从依赖反转容器中取得某个 ViewModel 的实例。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.IViewModelProviderConnectionTarget">
+            <summary>
+            如果类型会被 <see cref="T:Cvte.Escort.IViewModelProvider"/> 管理，实现此方法将获得 <see cref="T:Cvte.Escort.IViewModelProvider"/> 的实例。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.IViewModelProviderConnectionTarget.Provider">
+            <summary>
+            此属性会被 <see cref="T:Cvte.Escort.IViewModelProvider"/> 赋值，以便在接口的实现类中获得管理此类型的 <see cref="T:Cvte.Escort.IViewModelProvider"/> 的实例。
+            通过 <see cref="T:Cvte.Escort.IViewModelProvider"/> 的实例可以与 View 和 ViewModel 发生关联。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IViewModelProviderConnectionTarget.Attach">
+            <summary>
+            此方法会被 <see cref="T:Cvte.Escort.IViewModelProvider"/> 调用，表示至少有一个 View 开始关联此 ViewModel。
+            在 <see cref="T:Cvte.Escort.IViewModelProvider"/> 的实现中，此方法需保证只调用一次，且在 <see cref="M:Cvte.Escort.IViewModelProviderConnectionTarget.Load"/> 之前调用。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IViewModelProviderConnectionTarget.Load">
+            <summary>
+            此方法会被 <see cref="T:Cvte.Escort.IViewModelProvider"/> 调用，表示任何一个 View 刚开始完成显示；只要有新的 View 显示，都需要调用此方法。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.IViewModelProviderConnectionTarget.Unload">
+            <summary>
+            此方法会被 <see cref="T:Cvte.Escort.IViewModelProvider"/> 调用，表示任何一个 View 不再显示；只要有 View 关闭，都需要调用此方法。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.ModelPropertyAttribute">
+            <summary>
+            在 ViewModel 的属性上指定此特性，使得 ViewModel 可以从 Model 中自动获取更新的值。
+            当调用 <see cref="M:Cvte.Escort.ViewModelBase.UpdateProperties``1(``0)"/> 时，会使用到此特性。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ModelPropertyAttribute.ModelPropertyName">
+            <summary>
+            获取用于更新对应 ViewModel 指定属性的 Model 的属性名称。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ModelPropertyAttribute.#ctor(System.String)">
+            <summary>
+            在 ViewModel 的属性上指定此特性，使得 ViewModel 可以从 Model 中自动获取更新的值。
+            </summary>
+            <param name="modelPropertyName">
+            指定 Model 中属性的名称，指定后，ViewModel 会从 Model 的此名称的属性中获取更新的值。
+            建议使用 nameof 关键字。
+            </param>
+        </member>
+        <member name="T:Cvte.Escort.ViewModelBase">
+            <summary>
+            为 ViewModel 提供基类。可以为 ViewModel 子类提供的功能包括抽象 UI 的导航与通知，依赖注入与单元测试支持和异步任务支持。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ViewModelBase.Cvte#Escort#IViewModelProviderConnectionTarget#Provider">
+            <summary>
+            获取或设置用于管理此 <see cref="T:Cvte.Escort.ViewModelBase"/> 实例的 <see cref="T:Cvte.Escort.IViewModelProvider"/>。
+            可能为 null，表示此 <see cref="T:Cvte.Escort.ViewModelBase"/> 独立存在，未被 View 使用。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ViewModelBase.AnyViewLoaded">
+            <summary>
+            获取一个值。该值指示与此 ViewModel 关联的 View 是否有任何一个当前正在显示并使用此 ViewModel。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelBase.ShowView``1">
+            <summary>
+            显示与指定的 ViewModel <typeparamref name="TViewModel"/> 关联的 View。
+            </summary>
+            <typeparam name="TViewModel">ViewModel 的契约类型。</typeparam>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelBase.CloseView">
+            <summary>
+            关闭关联此 ViewModel 的 View。这将关闭窗口或者导航返回 Page。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelBase.OnAttached">
+            <summary>
+            在派生类中重写此方法时，指定 View 将此 ViewModel 设置为其 DataContext 时应该进行的初始化操作。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelBase.OnLoaded">
+            <summary>
+            在派生类中重写此方法时，指定 View 布局完成并显示时 ViewModel 应该进行的初始化操作。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelBase.OnUnloaded">
+            <summary>
+            在派生类中重写此方法时，指定 View 从视觉树中移除或窗口关闭时 ViewModel 应该进行的反初始化操作。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelBase.UpdateProperties``1(``0)">
+            <summary>
+            从指定的 Model 中获取更新的值到此 ViewModel 上。
+            如果 ViewModel 中需要更新的属性名称与 Model 中不一致，则需要使用 <see cref="T:Cvte.Escort.ModelPropertyAttribute"/> 标记 Model 中的属性名。
+            </summary>
+            <typeparam name="T">Model 的类型。</typeparam>
+            <param name="valueSource">Model 的实例。</param>
+        </member>
+        <member name="F:Cvte.Escort.ViewModelBase._loadingCount">
+            <summary>
+            记录此 ViewModel 的实例被多少个 View 以显式方式使用。
+            仅指定但未显示的不计在内。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ViewModelBase._isAttached">
+            <summary>
+            记录此 ViewModel 的实例是否已被设置为 View 的 DataContext。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ViewModelBase._provider">
+            <summary>
+            记录关联到此 <see cref="T:Cvte.Escort.ViewModelBase"/> 的 <see cref="T:Cvte.Escort.IViewModelProvider"/>。
+            如果没有任何 <see cref="T:Cvte.Escort.IViewModelProvider"/> 关联到此实例，此值将保持为 null。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.ViewModelExtension">
+            <inheritdoc />
+            <summary>
+            为 XAML 中的 View 提供 ViewModel 实体的绑定。
+            使用方法为 DataContext="{escort:ViewModel XxxViewModel}"。其中 XxxViewModel 为契约类型（不一定是真实类型）。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ViewModelExtension.CachedGenericResolverDictionary">
+            <summary>
+            包含 ViewModel 契约类型到 <see cref="M:Cvte.Escort.ViewModelProvider.Resolve``1(System.Windows.FrameworkElement)"/> 泛型方法调用的缓存。
+            Key：<see cref="T:Cvte.Escort.ViewModelProvider"/> 的实例与 ViewModel 契约类型组成的元组。
+            Value：用以调用 Key.provider 实例中 <see cref="M:Cvte.Escort.ViewModelProvider.Resolve``1(System.Windows.FrameworkElement)"/> 方法的委托。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelExtension.#ctor">
+            <inheritdoc />
+            <summary>
+            创建 <see cref="T:Cvte.Escort.ViewModelExtension" /> 的新实例，应该由 XAML 解析器创建。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelExtension.#ctor(System.Type)">
+            <inheritdoc />
+            <summary>
+            创建 <see cref="T:Cvte.Escort.ViewModelExtension" /> 的新实例，应该由 XAML 解析器创建。
+            </summary>
+            <param name="viewModelContractType"></param>
+        </member>
+        <member name="P:Cvte.Escort.ViewModelExtension.ViewModelContractType">
+            <summary>
+            获取或设置 ViewModel 的契约类型。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelExtension.ProvideValue(System.IServiceProvider)">
+            <inheritdoc />
+        </member>
+        <member name="T:Cvte.Escort.ViewModelProvider">
+            <inheritdoc />
+            <summary>
+            为 View 和 ViewModel 之间的关联提供默认的管理方式。
+            </summary>
+        </member>
+        <member name="P:Cvte.Escort.ViewModelProvider.Current">
+            <summary>
+            获取当前正在使用的 <see cref="T:Cvte.Escort.IViewModelProvider"/> 的实例，
+            用于给 <see cref="T:Cvte.Escort.ViewModelExtension"/> 标记扩展提供 View/ViewModel 的关联依据。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.#ctor(System.Collections.Generic.IEnumerable{Cvte.Escort.DI.IContractInfo},System.Collections.Generic.IEnumerable{Cvte.Escort.DI.IContractInfo})">
+            <summary>
+            创建新的 View/ViewModel 管理方式。对于大型程序集，直接指定导出的类型比指定导出程序集具有更高的性能。
+            <para>
+            其中 <paramref name="viewModelContracts"/> 为所有应该导出的 ViewModel
+            <paramref name="viewContracts"/> 为所有应该导出的 View。
+            </para>
+            </summary>
+            <param name="viewModelContracts">应该导出的所有 ViewModel 的导出类型和对应的创建方法。</param>
+            <param name="viewContracts">应该导出的所有 View 的导出类型和对应的创建方法。</param>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.AppendContracts(System.Collections.Generic.IEnumerable{Cvte.Escort.DI.IContractInfo},System.Collections.Generic.IEnumerable{Cvte.Escort.DI.IContractInfo})">
+            <summary>
+            额外添加一些 View/ViewModel 的依赖信息。对于大型程序集，直接指定导出的类型比指定导出程序集具有更高的性能。
+            <para>
+            其中 <paramref name="viewModelContracts"/> 为所有应该导出的 ViewModel
+            <paramref name="viewContracts"/> 为所有应该导出的 View。
+            </para>
+            </summary>
+            <param name="viewModelContracts">应该导出的所有 ViewModel 的导出类型和对应的创建方法。</param>
+            <param name="viewContracts">应该导出的所有 View 的导出类型和对应的创建方法。</param>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.GetViewModel``1">
+            <inheritdoc />
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.Resolve``1(System.Windows.FrameworkElement)">
+            <summary>
+            获取或创建与 <paramref name="viewAsKey" /> 对应的指定类型的 ViewModel。
+            </summary>
+            <typeparam name="TViewModel">ViewModel 的类型。可以是接口。</typeparam>
+            <param name="viewAsKey">此 ViewModel 将关联的 View。</param>
+            <returns></returns>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.ResolveViewModelCore``1(System.Windows.FrameworkElement)">
+            <summary>
+            在派生类中重写此方法时，指定如何创建一个 ViewModel 并关联到 View 中。
+            </summary>
+            <param name="view">需要关联的 View。</param>
+            <typeparam name="TViewModel">需要创建的 ViewModel 的契约类型（可能是接口）。</typeparam>
+            <returns>获取到的 ViewModel 的实例。</returns>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.ShowViewFrom``1(Cvte.Escort.IViewModel)">
+            <inheritdoc />
+            <summary>
+            从 <paramref name="viewModelSource" /> 中查找一个关联了 <typeparamref name="TViewModel" /> 的 View，并将其显示出来。
+            </summary>
+            <param name="viewModelSource">开始查找的 ViewModel。如果是从 <see cref="T:Cvte.Escort.ViewModelBase" />（基类而非子类）中调用，则传入自身。</param>
+            <typeparam name="TViewModel">要显示的关联到 ViewModel 的 View。</typeparam>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.CloseViewFrom(Cvte.Escort.IViewModel)">
+            <summary>
+            从 <paramref name="viewModelSource" /> 所关联的 View 中查找最接近的可以关闭的 View，并将其关闭。
+            </summary>
+            <param name="viewModelSource"></param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.View_Loaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            当 View Loaded 的时候触发。这是事件处理函数，而且还是静态的，反正也无法被垃圾回收，那就不考虑事件的 -= 了。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.View_Unloaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            当 View Unloaded 的时候触发。这是事件处理函数，而且还是静态的，反正也无法被垃圾回收，那就不考虑事件的 -= 了。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProvider.SendMessageFrom``1(Cvte.Escort.IViewModel,``0)">
+            <summary>
+            未实现。
+            </summary>
+            <param name="viewModelSource"></param>
+            <param name="message"></param>
+            <typeparam name="TMessage"></typeparam>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="T:Cvte.Escort.ViewModelProviderExtensions">
+            <summary>
+            为 <see cref="T:Cvte.Escort.IViewModelProvider"/> 的完整实现提供辅助方法。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProviderExtensions.Connect(Cvte.Escort.IViewModelProvider,Cvte.Escort.ViewModelBase)">
+            <summary>
+            当类型实现了 <see cref="T:Cvte.Escort.IViewModelProvider"/> 接口后，通过此扩展方法
+            将 <see cref="T:Cvte.Escort.ViewModelBase"/> 关联到此 <see cref="T:Cvte.Escort.IViewModelProvider"/>。
+            <para/>
+            这样，<see cref="T:Cvte.Escort.ViewModelBase"/> 将可以向 <see cref="T:Cvte.Escort.IViewModelProvider"/>
+            发送它与其他 View 和 ViewModel 的通信请求。
+            </summary>
+            <param name="provider"><see cref="T:Cvte.Escort.IViewModelProvider"/> 接口的实例。</param>
+            <param name="viewModel">被 <paramref name="provider"/> 管理的 <see cref="T:Cvte.Escort.ViewModelBase"/>。</param>
+            <exception cref="T:System.ArgumentNullException">
+            参数 <paramref name="provider"/> 或 <paramref name="viewModel"/> 为 null。
+            </exception>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProviderExtensions.Attach(Cvte.Escort.IViewModelProvider,Cvte.Escort.ViewModelBase)">
+            <summary>
+            当类型实现了 <see cref="T:Cvte.Escort.IViewModelProvider"/> 接口后，通过此扩展方法
+            通知 <see cref="T:Cvte.Escort.ViewModelBase"/> 第一个 View 与此 ViewModel 的关联已经开始。
+            </summary>
+            <param name="provider"><see cref="T:Cvte.Escort.IViewModelProvider"/> 接口的实例。</param>
+            <param name="viewModel">被 <paramref name="provider"/> 管理的 <see cref="T:Cvte.Escort.ViewModelBase"/>。</param>
+            <exception cref="T:System.ArgumentNullException">
+            参数 <paramref name="provider"/> 或 <paramref name="viewModel"/> 为 null。
+            </exception>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProviderExtensions.Load(Cvte.Escort.IViewModelProvider,Cvte.Escort.ViewModelBase)">
+            <summary>
+            当类型实现了 <see cref="T:Cvte.Escort.IViewModelProvider"/> 接口后，通过此扩展方法
+            通知 <see cref="T:Cvte.Escort.ViewModelBase"/> 有一个 View 开始使用此 ViewModel 显示。
+            每有一个新 View 显示都需要调用一次此方法。
+            </summary>
+            <param name="provider"><see cref="T:Cvte.Escort.IViewModelProvider"/> 接口的实例。</param>
+            <param name="viewModel">被 <paramref name="provider"/> 管理的 <see cref="T:Cvte.Escort.ViewModelBase"/>。</param>
+            <exception cref="T:System.ArgumentNullException">
+            参数 <paramref name="provider"/> 或 <paramref name="viewModel"/> 为 null。
+            </exception>
+        </member>
+        <member name="M:Cvte.Escort.ViewModelProviderExtensions.Unload(Cvte.Escort.IViewModelProvider,Cvte.Escort.ViewModelBase)">
+            <summary>
+            当类型实现了 <see cref="T:Cvte.Escort.IViewModelProvider"/> 接口后，通过此扩展方法
+            通知 <see cref="T:Cvte.Escort.ViewModelBase"/> 有一个 View 关闭显示。
+            每有一个新 View 关闭都需要调用一次此方法。
+            </summary>
+            <param name="provider"><see cref="T:Cvte.Escort.IViewModelProvider"/> 接口的实例。</param>
+            <param name="viewModel">被 <paramref name="provider"/> 管理的 <see cref="T:Cvte.Escort.ViewModelBase"/>。</param>
+            <exception cref="T:System.ArgumentNullException">
+            参数 <paramref name="provider"/> 或 <paramref name="viewModel"/> 为 null。
+            </exception>
+        </member>
+        <member name="T:Cvte.Escort.ActionCommand`2">
+            <summary>
+            表示一个必须提供参数才能执行的命令。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`2.#ctor(System.Action{`0,`1},System.Func{System.Boolean})">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.ActionCommand"/> 的新实例，当 <see cref="T:System.Windows.Input.ICommand"/> 被执行时，将调用参数传入的动作。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand`2._action">
+            <summary>
+            用于接受所提供的参数并执行的委托。
+            只可能是 Action{T1, T2} 或 Func{T, Task}。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand`2._canExecute">
+            <summary>
+            此 <see cref="T:Cvte.Escort.ActionCommand`2"/> 中用于判定任务是否可以执行。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`2.Execute(`0,`1)">
+            <summary>
+            使用指定的参数执行此命令。
+            框架中没有约定参数值是否允许为 null，这由参数定义时的泛型类型约定（C#8.0）或由命令的实现者约定。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`2.ExecuteAsync(System.Object)">
+            <summary>
+            尝试以异步的方式执行此同步命令。因为参数的获取可能是异步的（例如使用 <see cref="T:Cvte.Escort.Commands.IAsyncParameterProvider`2"/>），所以此方法也必须是异步的。
+            对于传入的参数会被解析成多个参数，传入的参数一定不允许为 null。
+            </summary>
+            <param name="parameter">接口中传入的原始参数。</param>
+        </member>
+        <member name="E:Cvte.Escort.ActionCommand`2.CanExecuteChanged">
+            <inheritdoc />
+            <summary>
+            当命令的可执行性改变时发生。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.ActionCommand`3">
+            <summary>
+            表示一个必须提供参数才能执行的命令。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`3.#ctor(System.Action{`0,`1,`2},System.Func{System.Boolean})">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.ActionCommand"/> 的新实例，当 <see cref="T:System.Windows.Input.ICommand"/> 被执行时，将调用参数传入的动作。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand`3._action">
+            <summary>
+            用于接受所提供的参数并执行的委托。
+            只可能是 Action{T1, T2, T3} 或 Func{T, Task}。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand`3._canExecute">
+            <summary>
+            此 <see cref="T:Cvte.Escort.ActionCommand`3"/> 中用于判定任务是否可以执行。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`3.Execute(`0,`1,`2)">
+            <summary>
+            使用指定的参数执行此命令。
+            框架中没有约定参数值是否允许为 null，这由参数定义时的泛型类型约定（C#8.0）或由命令的实现者约定。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`3.ExecuteAsync(System.Object)">
+            <summary>
+            尝试以异步的方式执行此同步命令。因为参数的获取可能是异步的（例如使用 <see cref="T:Cvte.Escort.Commands.IAsyncParameterProvider`3"/>），所以此方法也必须是异步的。
+            对于传入的参数会被解析成多个参数，传入的参数一定不允许为 null。
+            </summary>
+            <param name="parameter">接口中传入的原始参数。</param>
+        </member>
+        <member name="E:Cvte.Escort.ActionCommand`3.CanExecuteChanged">
+            <inheritdoc />
+            <summary>
+            当命令的可执行性改变时发生。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.ActionCommand`4">
+            <summary>
+            表示一个必须提供参数才能执行的命令。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`4.#ctor(System.Action{`0,`1,`2,`3},System.Func{System.Boolean})">
+            <summary>
+            创建 <see cref="T:Cvte.Escort.ActionCommand"/> 的新实例，当 <see cref="T:System.Windows.Input.ICommand"/> 被执行时，将调用参数传入的动作。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand`4._action">
+            <summary>
+            用于接受所提供的参数并执行的委托。
+            只可能是 Action{T1, T2, T3, T4} 或 Func{T, Task}。
+            </summary>
+        </member>
+        <member name="F:Cvte.Escort.ActionCommand`4._canExecute">
+            <summary>
+            此 <see cref="T:Cvte.Escort.ActionCommand`4"/> 中用于判定任务是否可以执行。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`4.Execute(`0,`1,`2,`3)">
+            <summary>
+            使用指定的参数执行此命令。
+            框架中没有约定参数值是否允许为 null，这由参数定义时的泛型类型约定（C#8.0）或由命令的实现者约定。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.ActionCommand`4.ExecuteAsync(System.Object)">
+            <summary>
+            尝试以异步的方式执行此同步命令。因为参数的获取可能是异步的（例如使用 <see cref="T:Cvte.Escort.Commands.IAsyncParameterProvider`4"/>），所以此方法也必须是异步的。
+            对于传入的参数会被解析成多个参数，传入的参数一定不允许为 null。
+            </summary>
+            <param name="parameter">接口中传入的原始参数。</param>
+        </member>
+        <member name="E:Cvte.Escort.ActionCommand`4.CanExecuteChanged">
+            <inheritdoc />
+            <summary>
+            当命令的可执行性改变时发生。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.AsyncCommand`2">
+            <inheritdoc />
+            <summary>
+            为具有特定类型命令参数的异步任务提供 <see cref="T:System.Windows.Input.ICommand" />。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`2.#ctor(System.Func{`0,`1,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建一个没有异步控制流的，带一个或多个泛型参数的异步命令。同时可以指定此异步的重新进入策略。
+            </summary>
+            <param name="asyncAction">异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`2.#ctor(System.Func{Cvte.Escort.AsyncExecutingContext,`0,`1,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建一个带有异步流程控制上下文的，带一个或多个泛型参数的异步命令。同时可以指定此异步的重新进入策略。
+            </summary>
+            <param name="asyncAction">带有异步流程控制上下文的异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="F:Cvte.Escort.AsyncCommand`2._asyncAction">
+            <summary>
+            异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`2.ExecuteAsyncCore(System.Object)">
+            <summary>
+            实际执行异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`2.ExecuteAsync(`0,`1)">
+            <summary>
+            以给定的参数执行此命令指定的异步任务。
+            如果任务已经在执行，则根据 <see cref="T:Cvte.Escort.ReentrancyPolicy"/> 指定的重新进入策略重新进入。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.AsyncCommand`3">
+            <inheritdoc />
+            <summary>
+            为具有特定类型命令参数的异步任务提供 <see cref="T:System.Windows.Input.ICommand" />。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`3.#ctor(System.Func{`0,`1,`2,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建一个没有异步控制流的，带一个或多个泛型参数的异步命令。同时可以指定此异步的重新进入策略。
+            </summary>
+            <param name="asyncAction">异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`3.#ctor(System.Func{Cvte.Escort.AsyncExecutingContext,`0,`1,`2,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建一个带有异步流程控制上下文的，带一个或多个泛型参数的异步命令。同时可以指定此异步的重新进入策略。
+            </summary>
+            <param name="asyncAction">带有异步流程控制上下文的异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="F:Cvte.Escort.AsyncCommand`3._asyncAction">
+            <summary>
+            异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`3.ExecuteAsyncCore(System.Object)">
+            <summary>
+            实际执行异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`3.ExecuteAsync(`0,`1,`2)">
+            <summary>
+            以给定的参数执行此命令指定的异步任务。
+            如果任务已经在执行，则根据 <see cref="T:Cvte.Escort.ReentrancyPolicy"/> 指定的重新进入策略重新进入。
+            </summary>
+        </member>
+        <member name="T:Cvte.Escort.AsyncCommand`4">
+            <inheritdoc />
+            <summary>
+            为具有特定类型命令参数的异步任务提供 <see cref="T:System.Windows.Input.ICommand" />。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`4.#ctor(System.Func{`0,`1,`2,`3,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建一个没有异步控制流的，带一个或多个泛型参数的异步命令。同时可以指定此异步的重新进入策略。
+            </summary>
+            <param name="asyncAction">异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`4.#ctor(System.Func{Cvte.Escort.AsyncExecutingContext,`0,`1,`2,`3,System.Threading.Tasks.Task},Cvte.Escort.ReentrancyPolicy)">
+            <summary>
+            创建一个带有异步流程控制上下文的，带一个或多个泛型参数的异步命令。同时可以指定此异步的重新进入策略。
+            </summary>
+            <param name="asyncAction">带有异步流程控制上下文的异步任务。</param>
+            <param name="reentrancyPolicy">异步任务的重新进入策略。</param>
+        </member>
+        <member name="F:Cvte.Escort.AsyncCommand`4._asyncAction">
+            <summary>
+            异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`4.ExecuteAsyncCore(System.Object)">
+            <summary>
+            实际执行异步任务。
+            </summary>
+        </member>
+        <member name="M:Cvte.Escort.AsyncCommand`4.ExecuteAsync(`0,`1,`2,`3)">
+            <summary>
+            以给定的参数执行此命令指定的异步任务。
+            如果任务已经在执行，则根据 <see cref="T:Cvte.Escort.ReentrancyPolicy"/> 指定的重新进入策略重新进入。
+            </summary>
+        </member>
+        <member name="T:Cvte.TypedEventHandler`1">
+            <summary>
+            表示指定类型的对象引发了不带数据的事件。
+            </summary>
+        </member>
+        <member name="T:Cvte.TypedEventHandler`2">
+            <summary>
+            表示指定类型的对象引发了带 <typeparamref name="TEventArgs"/> 类型数据的事件。
+            </summary>
+        </member>
+        <member name="T:Cvte.AsyncEventHandler">
+            <summary>
+            表示引发异步执行的不带数据的事件。通常不应该存在这种类型的事件。
+            </summary>
+        </member>
+        <member name="T:Cvte.AsyncEventHandler`1">
+            <summary>
+            表示引发异步执行的带 <typeparamref name="TEventArgs"/> 类型数据的事件。这通常意味着参数中存在可能被异步修改的属性。
+            </summary>
+        </member>
+        <member name="T:Cvte.AsyncTypedEventHandler`1">
+            <summary>
+            表示指定类型的对象引发异步执行的不带数据的事件。通常不应该存在这种类型的事件。
+            </summary>
+        </member>
+        <member name="T:Cvte.AsyncTypedEventHandler`2">
+            <summary>
+            表示指定类型的对象引发异步执行的带 <typeparamref name="TEventArgs"/> 类型数据的事件。这通常意味着参数中存在可能被异步修改的属性。
+            </summary>
+        </member>
+    </members>
+</doc>

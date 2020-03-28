@@ -1,0 +1,11 @@
+F:\Gitlab\CleanCacheTool\CleanCacheTool.Api\bin\Debug\CleanCacheTool.Api.dll
+F:\Gitlab\CleanCacheTool\CleanCacheTool.Api\bin\Debug\CleanCacheTool.Api.pdb
+F:\Gitlab\CleanCacheTool\CleanCacheTool.Api\obj\Debug\CleanCacheTool.Api.csproj.CoreCompileInputs.cache
+F:\Gitlab\CleanCacheTool\CleanCacheTool.Api\obj\Debug\CleanCacheTool.Api.dll
+F:\Gitlab\CleanCacheTool\CleanCacheTool.Api\obj\Debug\CleanCacheTool.Api.pdb
+F:\Gitlab\CleanCacheTool\CleanCacheTool.Api\obj\Debug\CleanCacheTool.Api.csprojAssemblyReference.cache
+F:\Gitlab-Myself\CleanCacheTool\CleanCacheTool.Api\bin\Debug\CleanCacheTool.Api.dll
+F:\Gitlab-Myself\CleanCacheTool\CleanCacheTool.Api\bin\Debug\CleanCacheTool.Api.pdb
+F:\Gitlab-Myself\CleanCacheTool\CleanCacheTool.Api\obj\Debug\CleanCacheTool.Api.dll
+F:\Gitlab-Myself\CleanCacheTool\CleanCacheTool.Api\obj\Debug\CleanCacheTool.Api.pdb
+F:\Gitlab-Myself\CleanCacheTool\CleanCacheTool.Api\obj\Debug\CleanCacheTool.Api.csprojAssemblyReference.cache

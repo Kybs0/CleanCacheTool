@@ -4,62 +4,88 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CleanCacheTool"
+        xmlns:views="clr-namespace:CleanCacheTool.Views"
+        xmlns:converters="clr-namespace:CleanCacheTool.Views.Converters"
+        xmlns:models="clr-namespace:CleanCacheTool.Views.Models"
+        xmlns:controls="clr-namespace:CleanCacheTool.Controls"
         mc:Ignorable="d" WindowStartupLocation="CenterScreen"
-        Title="空间清理工具" Height="600" Width="900"  Icon="bitbug_favicon.ico"
-        BorderBrush="#D0D1D6" ShowInTaskbar="True" ResizeMode="NoResize"
-        AllowsTransparency="True" WindowStyle="None" Background="Transparent">
+        Title="空间清理" Icon="icon.ico"
+        BorderBrush="#D0D1D6" ShowInTaskbar="True" ResizeMode="NoResize" SizeToContent="WidthAndHeight"
+        AllowsTransparency="True" WindowStyle="None" Background="Transparent" x:Name="TheMainWindow">
     <Window.Resources>
-        <SolidColorBrush x:Key="Color.Text.Normal">#666666</SolidColorBrush>
-        <StreamGeometry x:Key="Window.Minimize">M0,6 V8 H10 V6 Z</StreamGeometry>
-        <StreamGeometry x:Key="Window.Close">M3,8L3,9 2,9 2,10 0,10 0,8 1,8 1,7 2,7 2,6 3,6 3,4 2,4 2,3 1,3 1,2 0,2 0,0 2,0 2,1 3,1 3,2 4,2 4,3 6,3 6,2 7,2 7,1 8,1 8,0 10,0 10,2 9,2 9,3 8,3 8,4 7,4 7,6 8,6 8,7 9,7 9,8 10,8 10,10 8,10 8,9 7,9 7,8 6,8 6,7 4,7 4,8 3,8z</StreamGeometry>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:VisibilityReverseConverter x:Key="VisibilityReverseConverter"/>
 
-        <ControlTemplate x:Key="Button.Tempate" TargetType="Button">
-            <Grid x:Name="RootGrid" Background="Transparent">
-                <Border x:Name="CoverBorder" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"/>
-                <Path x:Name="IconPath" Fill="#808080" Margin="{TemplateBinding Padding}" VerticalAlignment="Center" HorizontalAlignment="Center"
-                      Data="{Binding Path=(local:ControlsHelper.Geometry),RelativeSource={RelativeSource TemplatedParent}}"/>
-            </Grid>
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="CoverBorder" Property="Background" 
-                            Value="{Binding Path=(local:ControlsHelper.BackgroundHover), RelativeSource={RelativeSource TemplatedParent}}"/>
-                    <Setter TargetName="IconPath" Property="Fill" 
-                            Value="{Binding Path=(local:ControlsHelper.ForegroundHover), RelativeSource={RelativeSource TemplatedParent}}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter TargetName="CoverBorder" Property="Background" 
-                            Value="{Binding Path=(local:ControlsHelper.BackgroundPressed), RelativeSource={RelativeSource TemplatedParent}}"/>
-                    <Setter TargetName="IconPath" Property="Fill" 
-                            Value="{Binding Path=(local:ControlsHelper.ForegroundPressed), RelativeSource={RelativeSource TemplatedParent}}"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter TargetName="IconPath" Property="Opacity" Value="0.4"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-
-        <Style x:Key="Style.Button.Base" TargetType="Button">
+        <SolidColorBrush x:Key="SettingBorderBrush" Color="#FFEEEEEE"></SolidColorBrush>
+        <SolidColorBrush x:Key="TabMenuBackground" Color="#F8F8F8"/>
+        <Style x:Key="Style.SettingTab" TargetType="TabControl">
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="OverridesDefaultStyle" Value="True" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-            <Setter Property="Width" Value="36" />
-            <Setter Property="Height" Value="30" />
-            <Setter Property="Padding" Value="5 2" />
-            <Setter Property="Template" Value="{StaticResource Button.Tempate}"/>
+            <Setter Property="Background" Value="{StaticResource TabMenuBackground}"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid KeyboardNavigation.TabNavigation="Local">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="150"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Row="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource SettingBorderBrush}">
+                                <StackPanel Orientation="Vertical" IsItemsHost="True" Background="{TemplateBinding Background}"/>
+                            </Border>
+                            <Border Grid.Column="1">
+                                <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
-
+        <Style TargetType="TabItem">
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Height" Value="48"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Grid x:Name="Root">
+                            <Border x:Name="Border" Background="{StaticResource TabMenuBackground}" Margin="0" BorderBrush="{StaticResource SettingBorderBrush}"  Height="{TemplateBinding Height}">
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <!--<Image Source="{TemplateBinding Tag}" Margin="26,0,14,0" Visibility="Collapsed" Stretch="None" SnapsToDevicePixels="True" VerticalAlignment="Center"/>-->
+                                        <TextBlock x:Name="ContentTextBlock" Text="{TemplateBinding Header}" FontSize="12" 
+                                                   Foreground=" #666666" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="White" />
+                                <Setter TargetName="Border" Property="BorderThickness" Value="0,1"/>
+                                <Setter TargetName="Border" Property="Margin" Value="0,0,-1,0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Border BorderThickness="1" BorderBrush="#FFE6E4E4">
         <Grid Background="White" ClipToBounds="True" WindowChrome.IsHitTestVisibleInChrome="True">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <!--标题栏-->
             <Grid Background="#FFF0F0F0"  MouseLeftButtonDown="HeaderGrid_OnMouseLeftButtonDown">
                 <StackPanel Orientation="Horizontal">
-                    <Image x:Name="IconImage" Stretch="None" SnapsToDevicePixels="True" UseLayoutRounding="True" Width="16" Height="16"
-                       VerticalAlignment="Center" Margin="8 0 0 0" Source="16.ico"/>
-                    <TextBlock x:Name="TitleTextBlock" Margin="5 0" Text="空间清理工具"
-                           Foreground="{StaticResource Color.Text.Normal}"
+                    <Image x:Name="IconImage" Stretch="UniformToFill" SnapsToDevicePixels="True" UseLayoutRounding="True" Width="16" Height="16"
+                       VerticalAlignment="Center" Margin="8 0 0 0" Source="icon.ico"/>
+                    <TextBlock x:Name="TitleTextBlock" Margin="5 0" Text="{Binding ElementName=TheMainWindow,Path=Title}"
+                           Foreground="{StaticResource Brush.Text.Normal}"
                            HorizontalAlignment="Left" VerticalAlignment="Center"
                            WindowChrome.IsHitTestVisibleInChrome="False">
                     </TextBlock>
@@ -86,7 +112,54 @@
                         />
                 </StackPanel>
             </Grid>
-            <local:CleanCacheView Grid.Row="1"></local:CleanCacheView>
+            <Grid Grid.Row="1"  Height="600" Width="900"
+                  Visibility="{Binding ElementName=MainViewGrid,Path=Visibility,Converter={StaticResource VisibilityReverseConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TabControl x:Name="ViewTabControl" Style="{StaticResource Style.SettingTab}">
+                    <TabItem x:Name="CleanCacheTabItem" Header="文件清理" HorizontalContentAlignment="Center"/>
+                    <TabItem x:Name="DiskSlimmingTabItem" Header="磁盘瘦身"/>
+                </TabControl>
+                <Grid Grid.Column="1">
+                    <views:CleanCacheListView x:Name="CleanCacheTabItemView" 
+                                            Visibility="{Binding ElementName=CleanCacheTabItem,Path=IsSelected,Converter={StaticResource BoolToVisibilityConverter}}" />
+                    <views:DiskSlimmingView x:Name="DiskSlimmingTabItemView" 
+                                            Visibility="{Binding ElementName=DiskSlimmingTabItem,Path=IsSelected,Converter={StaticResource BoolToVisibilityConverter}}" />
+                </Grid>
+                <Button Grid.Column="0" Content="返回" ToolTip="返回主界面" x:Name="BackToMainViewButton" Click="BackToMainViewButton_OnClick" Background="Transparent" 
+                        BorderBrush="LightGray" Padding="4 2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10" BorderThickness="0" Visibility="Visible"/>
+            </Grid>
+            <Grid Grid.Row="1" x:Name="MainViewGrid" Visibility="Collapsed" Height="300" Width="600" HorizontalAlignment="Center">
+                <Button x:Name="CleanButton" Content="一键清理C盘" MinWidth="80" Click="CleanButton_OnClick" Background="Transparent" 
+                        BorderBrush="LightGray" Padding="20 6" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Button Content="转移桌面" x:Name="TransferDesktopButton" Click="TransferDesktopButton_OnClick" Background="Transparent" 
+                        BorderBrush="LightGray" Padding="4 2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10"
+                        ToolTip="转移桌面文件到D盘等"/>
+
+                <Button Content="高级选项" x:Name="MoreOperationsButton" Click="MoreOperationsButton_OnClick" Background="Transparent" 
+                        BorderBrush="LightGray" Padding="4 2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10" BorderThickness="0"/>
+
+                <Grid Background="White" DataContext="{x:Static models:DiskSlimmingViewModel.Instance}"
+                      Visibility="{Binding IsMovingFolder,Converter={StaticResource BoolToVisibilityConverter}}">
+                    <local:LongBarLoadingControl x:Name="MoveLoadingControl" VerticalAlignment="Center"
+                                                 LoadingTips="文件转移中"
+                                                 LoadingTipsDetail="{Binding CurrentOperationDetail}" IsLoadingTipsDetailSmall="True"
+                                                 ProgressValue="{Binding MovingProgressValue}"
+                                                 ProgressValueDetail="{Binding MovingProgressDetail}"
+                                                 LoadedTips="转移完成"/>
+                </Grid>
+                <Grid Background="White"  DataContext="{x:Static models:CleanCacheVeiwModel.Instance}"
+                      Visibility="{Binding IsCleaningCache,Converter={StaticResource BoolToVisibilityConverter}}">
+                    <local:LongBarLoadingControl x:Name="CleanLoadingControl" VerticalAlignment="Center"
+                                                 LoadingTips="垃圾清理中"
+                                                 LoadingTipsDetail="{Binding CurrentOperationDetail}" IsLoadingTipsDetailSmall="True"
+                                                 ProgressValue="{Binding CleanCacheProgress}"
+                                                 ProgressValueDetail="{Binding CleanCacheProgressDetail}"
+                                                 LoadedTips="清理完成"/>
+                </Grid>
+            </Grid>
         </Grid>
     </Border>
 </Window>

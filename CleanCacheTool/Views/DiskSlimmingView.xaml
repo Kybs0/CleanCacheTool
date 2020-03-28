@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="CleanCacheTool.Views.DiskSlimmingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CleanCacheTool.Views"
+             xmlns:models="clr-namespace:CleanCacheTool.Views.Models"
+             xmlns:cleanCacheTool="clr-namespace:CleanCacheTool"
+             xmlns:converters="clr-namespace:CleanCacheTool.Views.Converters"
+             xmlns:helper="clr-namespace:CleanCacheTool.Helper"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <models:DiskSlimmingViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="16,0">
+            <StackPanel x:Name="CacheOperationPanel" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" Height="30" Margin="0 20 0 0">
+                    <TextBlock Text="当前桌面路径："  VerticalAlignment="Center"></TextBlock>
+                    <Border BorderThickness="1" CornerRadius="2 0 0 2" BorderBrush="{StaticResource Brush.BorderBrush.Lighter}">
+                        <TextBox Text="{Binding DesktopFolder}" IsEnabled="False" Width="370"
+                                 BorderThickness="0" Background="White"
+                                 Padding="7 0 12 0" VerticalContentAlignment="Center"
+                                 helper:TextBoxHelper.ScrollEndWhenTextTrimmed="True"/>
+                    </Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
+                    <TextBlock Text="设置新的路径："  VerticalAlignment="Center"></TextBlock>
+                    <Border BorderThickness="1" CornerRadius="2 0 0 2" BorderBrush="{StaticResource Brush.BorderBrush.Lighter}">
+                        <TextBox Text="{Binding DestFolder}" IsEnabled="True" Width="370"
+                                 BorderThickness="0" Background="White"
+                                 Padding="7 0 12 0" VerticalContentAlignment="Center"/>
+                    </Border>
+                    <Button x:Name="SelectFolderButton" Content="···" MinWidth="40" Command="{Binding SelectDesktopCommand}" Background="Transparent" 
+                            BorderBrush="LightGray" Padding="6 6" Margin="-40 0 0 0" BorderThickness="0" ToolTip="选择新的桌面路径"/>
+                    <Button x:Name="SetDefaultDesktopButton" Content="默认桌面" MinWidth="40" Command="{Binding SetDefaultDesktopCommand}" Background="Transparent" 
+                            BorderBrush="LightGray" Padding="6 6" BorderThickness="0" ToolTip="选择默认桌面"/>
+                </StackPanel>
+                <Button x:Name="TransferFolderButton" Content="转移" MinWidth="80" Command="{Binding TransferDesktopCommand}" Background="Transparent" 
+                        BorderBrush="LightGray" Padding="20 6" HorizontalAlignment="Left" Margin="0 20 0 0"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+
+        </Grid>
+        <Grid Grid.Row="0" Grid.RowSpan="2" x:Name="LoadingGrid" Background="White" 
+              Visibility="{Binding IsMovingFolder,Converter={StaticResource BoolToVisibilityConverter}}">
+            <cleanCacheTool:LongBarLoadingControl x:Name="LoadingControl" VerticalAlignment="Center"
+                                         LoadingTips="文件转移中"
+                                         LoadingTipsDetail="{Binding CurrentOperationDetail}" IsLoadingTipsDetailSmall="True"
+                                         ProgressValue="{Binding MovingProgressValue}"
+                                         ProgressValueDetail="{Binding MovingProgressDetail}"
+                                         LoadedTips="转移完成"/>
+        </Grid>
+    </Grid>
+</UserControl>

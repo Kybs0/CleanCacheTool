@@ -1,0 +1,75 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Version>0.10.9-alpha</Version>
+    <TargetFrameworks>net45;</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <PackageId>Cvte.Escort.MVVM</PackageId>
+    <RootNamespace>Cvte.Escort</RootNamespace>
+    <CodeAnalysisRuleSet>Cvte.Escort.MVVM.ruleset</CodeAnalysisRuleSet>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSource>true</IncludeSource>
+    <PackageOutputPath>..\..\bin\$(Configuration)\</PackageOutputPath>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <Authors>吕毅;刘俊杰</Authors>
+    <Company>广州视睿电子科技有限公司</Company>
+    <RepositoryUrl>git@gitlab.gz.cvte.cn:iip-win/Cvte.Escort.MVVM.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://gitlab.gz.cvte.cn/iip-win/Cvte.Escort.MVVM</PackageProjectUrl>
+    <PackageIconUrl>https://gitlab.gz.cvte.cn/uploads/project/avatar/558/logo.png</PackageIconUrl>
+    <PackageLicenseUrl>https://gitlab.gz.cvte.cn/iip-win/Cvte.Escort.MVVM/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>© 2017-2018 广州视睿电子科技有限公司。保留所有权利。</Copyright>
+    <Description>Escort MVVM 框架是一套异步 MVVM 框架，对异步任务的原生支持是其可能强于其他 MVVM 框架的地方。
+作为 MVVM 模式的一套实现，它当然也具备 MVVM 框架的一般功能，但是以下这些点是其可能优于其他 MVVM 框架的一些特色：
+- 原生支持异步任务和异步状态
+- ViewModel 层原生支持测试驱动开发
+- 抽象的 View 导航，而不止是页面切换</Description>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <DefineConstants>$(DefineConstants);NETFRAMEWORK</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <!-- 版本管理 -->
+    <None Remove="Commands_\Generic\.gitignore" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <Compile Remove="Commands_\AsyncViewCommand.cs" />
+    <Compile Remove="Commands_\ViewCommand.cs" />
+    <Compile Remove="UI_\IViewAggregator.cs" />
+    <Compile Remove="UI_\ViewFrame.cs" />
+    <Compile Remove="UI_\ViewFrameExtension.cs" />
+    <Compile Remove="Utils\MarkupExtensionValidator.cs" />
+    <Compile Remove="Utils\VisualTreeExtensions.cs" />
+    <Compile Remove="ViewModel_\ViewModelExtension.cs" />
+    <Compile Remove="ViewModel_\InternalViewModelProviderExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cvte.Compiler" Version="0.3.8-alpha" PrivateAssets="All" />
+    <PackageReference Include="Buildkit.Versioner" Version="3.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.1" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+
+  <Target Condition="$(IncludeSource) == 'true' Or $(IncludeSymbols) == 'true'" Name="DeleteOriginalLib" AfterTargets="GenerateNuspec">
+    <Delete Files="$(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg" />
+  </Target>
+
+  <Target Condition="$(IncludeSource) == 'true' Or $(IncludeSymbols) == 'true'" Name="UseSymbolsInsteadOfLib" AfterTargets="DeleteOriginalLib">
+    <Copy SourceFiles="$(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).symbols.nupkg" DestinationFiles="$(PackageOutputAbsolutePath)$(PackageId).$(PackageVersion).nupkg" />
+  </Target>
+
+</Project>
