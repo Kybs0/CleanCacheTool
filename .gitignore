@@ -2,3 +2,5 @@
 /CleanCacheTool/obj
 /.vs
 /PresetFolders.ini
+/CleanCacheTool.Api/obj
+/CleanCacheTool.Api/bin

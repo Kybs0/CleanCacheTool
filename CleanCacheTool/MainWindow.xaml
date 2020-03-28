@@ -129,17 +129,17 @@
                                             Visibility="{Binding ElementName=DiskSlimmingTabItem,Path=IsSelected,Converter={StaticResource BoolToVisibilityConverter}}" />
                 </Grid>
                 <Button Grid.Column="0" Content="返回" ToolTip="返回主界面" x:Name="BackToMainViewButton" Click="BackToMainViewButton_OnClick" Background="Transparent" 
-                        BorderBrush="LightGray" Padding="4 2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10" BorderThickness="0" Visibility="Visible"/>
+                        BorderBrush="LightGray" Padding="10 6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,6" BorderThickness="0" Visibility="Visible"/>
             </Grid>
-            <Grid Grid.Row="1" x:Name="MainViewGrid" Visibility="Collapsed" Height="300" Width="600" HorizontalAlignment="Center">
+            <Grid Grid.Row="1" x:Name="MainViewGrid" Visibility="Collapsed" Height="600" Width="900" HorizontalAlignment="Center">
                 <Button x:Name="CleanButton" Content="一键清理C盘" MinWidth="80" Click="CleanButton_OnClick" Background="Transparent" 
                         BorderBrush="LightGray" Padding="20 6" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <Button Content="转移桌面" x:Name="TransferDesktopButton" Click="TransferDesktopButton_OnClick" Background="Transparent" 
-                        BorderBrush="LightGray" Padding="4 2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10"
-                        ToolTip="转移桌面文件到D盘等"/>
+                <Button Content="一键转移桌面" x:Name="TransferDesktopButton" Click="TransferDesktopButton_OnClick" Background="Transparent" 
+                        BorderBrush="LightGray" Padding="10 6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10"
+                        ToolTip="转移桌面文件到D盘等" Visibility="Collapsed"/>
 
                 <Button Content="高级选项" x:Name="MoreOperationsButton" Click="MoreOperationsButton_OnClick" Background="Transparent" 
-                        BorderBrush="LightGray" Padding="4 2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10" BorderThickness="0"/>
+                        BorderBrush="LightGray" Padding="10 6" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10,6" BorderThickness="0"/>
 
                 <Grid Background="White" DataContext="{x:Static models:DiskSlimmingViewModel.Instance}"
                       Visibility="{Binding IsMovingFolder,Converter={StaticResource BoolToVisibilityConverter}}">
