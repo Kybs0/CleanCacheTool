@@ -61,11 +61,13 @@ namespace CleanCacheTool
         private static List<string> PresetWindowsFolders = new List<string>()
         {
             @"C:\Windows\winsxs\Backup",
+            //系统更新补丁文件
             @"C:\Windows\SoftwareDistribution\Download",
             @"C:\Windows\Prefetch",
             @"C:\Windows\assembly\temp",
             @"C:\windows\temp",
             @"C:\Windows\Help",
+            @"C:\Windows\System32\LogFiles",
         };
 
         private static List<string> GetUserDataFolders()
@@ -75,6 +77,7 @@ namespace CleanCacheTool
 
             string download = Path.Combine(userFolder, "Downloads");
             folders.Add(download);
+            //本地保存临时文件
             string localTemp = Path.Combine(userFolder, @"AppData\Local\Temp");
             folders.Add(localTemp);
 
