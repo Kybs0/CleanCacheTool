@@ -62,7 +62,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="26"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
                 <Button x:Name="ModuleFolderNameButton" Grid.Column="1" Content="{Binding Path=ModuleFolder}" VerticalAlignment="Center" HorizontalAlignment="Left"
                         Style="{StaticResource Style.LinkedButton}" Click="ModuleFolderNameLinkedButton_OnClick" 
@@ -177,7 +177,7 @@
             </StackPanel>
             <Button x:Name="SettingButton" Content="配置文件" HorizontalAlignment="Right" VerticalAlignment="Center"
                     Style="{StaticResource Style.LinkedButton}" Click="Hyperlink_OnClick" 
-                    Cursor="Hand" FontSize="12" Margin="0 0 50 0"/>
+                    Cursor="Hand" FontSize="12" Margin="0 0 10 0"/>
         </Grid>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -190,7 +190,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="26"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
                 <CheckBox Grid.Column="0" Name="AllSelectCheckBox" Click="AllSelectCheckBox_OnClick"
                           Style="{StaticResource Style.DefaultCheckBox}" VerticalAlignment="Center" Margin="0 -1 0 0"

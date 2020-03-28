@@ -112,7 +112,7 @@
                         />
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="1"  Height="600" Width="900"
+            <Grid Grid.Row="1" Height="500" Width="800"
                   Visibility="{Binding ElementName=MainViewGrid,Path=Visibility,Converter={StaticResource VisibilityReverseConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="150"/>
@@ -131,7 +131,7 @@
                 <Button Grid.Column="0" Content="返回" ToolTip="返回主界面" x:Name="BackToMainViewButton" Click="BackToMainViewButton_OnClick" Background="Transparent" 
                         BorderBrush="LightGray" Padding="10 6" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,6" BorderThickness="0" Visibility="Visible"/>
             </Grid>
-            <Grid Grid.Row="1" x:Name="MainViewGrid" Visibility="Collapsed" Height="600" Width="900" HorizontalAlignment="Center">
+            <Grid Grid.Row="1" x:Name="MainViewGrid" Visibility="Collapsed" Height="500" Width="800" HorizontalAlignment="Center">
                 <Button x:Name="CleanButton" Content="一键清理C盘" MinWidth="80" Click="CleanButton_OnClick" Background="Transparent" 
                         BorderBrush="LightGray" Padding="20 6" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <Button Content="一键转移桌面" x:Name="TransferDesktopButton" Click="TransferDesktopButton_OnClick" Background="Transparent" 
